@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import type { Alg } from "cubing/alg";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import App from "./App";
@@ -254,4 +254,45 @@ test("sessions keep separate solves and switching works", () => {
   const first = (select as HTMLSelectElement).options[0].value;
   fireEvent.change(select, { target: { value: first } });
   expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
+});
+
+test("solve detail dialog edits an older solve's penalty", () => {
+  render(<App />);
+  completeSolve(10000);
+  completeSolve(11000);
+  completeSolve(12000);
+
+  // Open the oldest solve (last in the newest-first list).
+  const items = screen.getAllByRole("listitem");
+  fireEvent.click(within(items[items.length - 1]).getByRole("button"));
+
+  const dialog = screen.getByRole("dialog", { name: "Solve detail" });
+  expect(dialog).toHaveTextContent("10.00");
+  expect(dialog).toHaveTextContent("R U R' U'");
+
+  fireEvent.click(within(dialog).getByRole("button", { name: "DNF" }));
+  expect(dialog).toHaveTextContent("DNF");
+  // Stats reflect the edit: best single is now 11.00.
+  expect(document.querySelector('[data-stat="single-best"]')).toHaveTextContent(
+    "11.00",
+  );
+
+  fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+test("deleting from the detail dialog removes the solve and closes", () => {
+  render(<App />);
+  completeSolve(10000);
+  completeSolve(11000);
+
+  const items = screen.getAllByRole("listitem");
+  fireEvent.click(within(items[items.length - 1]).getByRole("button"));
+  fireEvent.click(
+    within(screen.getByRole("dialog")).getByRole("button", {
+      name: "Delete this solve",
+    }),
+  );
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(screen.getAllByRole("listitem")).toHaveLength(1);
 });
