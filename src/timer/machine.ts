@@ -11,7 +11,12 @@ export type TimerState =
   | { status: "inspectionArmed"; startedAt: number; since: number }
   | { status: "ready"; inspectionStartedAt?: number }
   | { status: "running"; startedAt: number; inspectionPenalty: Penalty }
-  | { status: "stopped"; timeMs: number; penalty: Penalty; awaitingRelease: boolean };
+  | {
+      status: "stopped";
+      timeMs: number;
+      penalty: Penalty;
+      awaitingRelease: boolean;
+    };
 
 export type TimerEvent =
   | { type: "PRESS"; now: number }
@@ -25,7 +30,10 @@ export interface TimerConfig {
 
 export const initialState: TimerState = { status: "idle" };
 
-function inspectionPenaltyAt(inspectionStartedAt: number, now: number): Penalty {
+function inspectionPenaltyAt(
+  inspectionStartedAt: number,
+  now: number,
+): Penalty {
   const elapsed = now - inspectionStartedAt;
   if (elapsed >= PLUS2_CUTOFF_MS) return "DNF";
   if (elapsed >= INSPECTION_MS) return "+2";
@@ -37,7 +45,9 @@ function startRunning(now: number, inspectionStartedAt?: number): TimerState {
     status: "running",
     startedAt: now,
     inspectionPenalty:
-      inspectionStartedAt === undefined ? "OK" : inspectionPenaltyAt(inspectionStartedAt, now),
+      inspectionStartedAt === undefined
+        ? "OK"
+        : inspectionPenaltyAt(inspectionStartedAt, now),
   };
 }
 
@@ -72,7 +82,11 @@ export function transition(
     case "inspection":
       switch (event.type) {
         case "PRESS":
-          return { status: "inspectionArmed", startedAt: state.startedAt, since: event.now };
+          return {
+            status: "inspectionArmed",
+            startedAt: state.startedAt,
+            since: event.now,
+          };
         case "CANCEL":
           return { status: "idle" };
         default:
