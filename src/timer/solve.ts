@@ -6,6 +6,7 @@ export interface Solve {
   id: string;
   timeMs: number;
   penalty: Penalty;
+  scramble: string;
   date: number;
 }
 

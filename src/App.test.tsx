@@ -1,7 +1,31 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import type { Alg } from "cubing/alg";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import App from "./App";
 import { HOLD_MS } from "./timer";
+
+// Deterministic scrambles: each advance() steps to the next canned alg.
+const SCRAMBLES = ["R U R' U'", "F B F' B'", "L D L' D'"];
+vi.mock("./scramble", async () => {
+  const { useState } = await import("react");
+  const { Alg } = await import("cubing/alg");
+  return {
+    useScramble: () => {
+      const [i, setI] = useState(0);
+      return {
+        scramble: new Alg(SCRAMBLES[i % SCRAMBLES.length]),
+        advance: () => setI((n) => n + 1),
+      };
+    },
+  };
+});
+
+// The real viewer needs cubing/twisty + WebGL; assert on the props instead.
+vi.mock("./components/TwistyViewer", () => ({
+  TwistyViewer: ({ scramble }: { scramble: Alg | null }) => (
+    <div data-testid="twisty" data-scramble={scramble?.toString() ?? ""} />
+  ),
+}));
 
 beforeEach(() => {
   vi.useFakeTimers({
@@ -135,4 +159,48 @@ test("with inspection enabled, a tap starts the countdown and warnings change co
   fireEvent.keyDown(document.body, { code: "KeyJ", key: "j" });
   fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
   expect(screen.getByRole("listitem")).toHaveTextContent("12.00+");
+});
+
+test("shows the scramble and advances to the prefetched one after a solve", () => {
+  render(<App />);
+  expect(screen.getByText("R U R' U'")).toBeInTheDocument();
+
+  completeSolve(5000);
+  // The solve records the scramble it was performed on...
+  expect(screen.getByRole("listitem")).toHaveAttribute("title", "R U R' U'");
+  // ...and the display moves to the next scramble.
+  expect(screen.getByText("F B F' B'")).toBeInTheDocument();
+});
+
+test("N re-scrambles when idle but only stops the timer when running", () => {
+  render(<App />);
+
+  fireEvent.keyDown(document.body, { code: "KeyN", key: "n" });
+  expect(screen.getByText("F B F' B'")).toBeInTheDocument();
+
+  pressSpace();
+  advance(HOLD_MS);
+  releaseSpace();
+  advance(2000);
+  expect(timer()).toHaveAttribute("data-status", "running");
+
+  fireEvent.keyDown(document.body, { code: "KeyN", key: "n" });
+  fireEvent.keyUp(document.body, { code: "KeyN", key: "n" });
+  expect(timer()).toHaveAttribute("data-status", "stopped");
+  // Exactly one advance (from the recorded solve), not a second from the hotkey.
+  expect(screen.getByText("L D L' D'")).toBeInTheDocument();
+});
+
+test("3D preview follows the scramble and can be hidden", () => {
+  render(<App />);
+  expect(screen.getByTestId("twisty")).toHaveAttribute(
+    "data-scramble",
+    "R U R' U'",
+  );
+
+  fireEvent.click(screen.getByRole("checkbox", { name: "3D preview" }));
+  expect(screen.queryByTestId("twisty")).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("checkbox", { name: "3D preview" }));
+  expect(screen.getByTestId("twisty")).toBeInTheDocument();
 });

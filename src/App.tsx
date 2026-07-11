@@ -1,17 +1,38 @@
 import { useEffect, useState } from "react";
-import { SolvePanel, TimerDisplay } from "./components";
-import { useTimer, type Penalty, type Solve, type SolveResult } from "./timer";
+import {
+  ScrambleDisplay,
+  SolvePanel,
+  TimerDisplay,
+  TwistyViewer,
+} from "./components";
+import { useScramble } from "./scramble";
+import {
+  isEditableTarget,
+  useTimer,
+  type Penalty,
+  type Solve,
+  type SolveResult,
+} from "./timer";
 import "./App.css";
 
 function App() {
   const [inspectionEnabled, setInspectionEnabled] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const [solves, setSolves] = useState<Solve[]>([]);
+  const { scramble, advance } = useScramble();
 
   const addSolve = ({ timeMs, penalty }: SolveResult) => {
     setSolves((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), timeMs, penalty, date: Date.now() },
+      {
+        id: crypto.randomUUID(),
+        timeMs,
+        penalty,
+        scramble: scramble?.toString() ?? "",
+        date: Date.now(),
+      },
     ]);
+    advance();
   };
 
   const setPenalty = (id: string, penalty: Penalty) => {
@@ -27,41 +48,54 @@ function App() {
     onSolve: addSolve,
   });
 
-  // Throwaway Phase 0 check: proves random-state scramble generation works in
-  // the browser. Replaced by src/scramble/ in Phase 2.
+  // Hotkey N: new scramble, only between attempts (never mid-inspection/solve).
+  const canRescramble = state.status === "idle" || state.status === "stopped";
   useEffect(() => {
-    if (import.meta.env.MODE === "test") return;
-    void (async () => {
-      const { randomScrambleForEvent } = await import("cubing/scramble");
-      const scramble = await randomScrambleForEvent("333");
-      console.log("Random-state 3x3 scramble:", scramble.toString());
-    })();
-  }, []);
+    if (!canRescramble) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat || isEditableTarget(e.target)) return;
+      if (e.key === "n" || e.key === "N") advance();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [canRescramble, advance]);
 
   return (
     <main>
-      <div className="timer-surface" {...surfaceProps}>
-        <TimerDisplay
-          state={state}
-          displayMs={displayMs}
-          inspectionElapsedMs={inspectionElapsedMs}
-        />
-      </div>
-      <aside className="side-panel">
-        <label>
-          <input
-            type="checkbox"
-            checked={inspectionEnabled}
-            onChange={(e) => setInspectionEnabled(e.target.checked)}
+      <ScrambleDisplay scramble={scramble} onNew={advance} />
+      <div className="content">
+        <div className="timer-surface" {...surfaceProps}>
+          <TimerDisplay
+            state={state}
+            displayMs={displayMs}
+            inspectionElapsedMs={inspectionElapsedMs}
           />
-          15s inspection
-        </label>
-        <SolvePanel
-          solves={solves}
-          onSetPenalty={setPenalty}
-          onDelete={deleteSolve}
-        />
-      </aside>
+        </div>
+        <aside className="side-panel">
+          <label>
+            <input
+              type="checkbox"
+              checked={inspectionEnabled}
+              onChange={(e) => setInspectionEnabled(e.target.checked)}
+            />
+            15s inspection
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={showPreview}
+              onChange={(e) => setShowPreview(e.target.checked)}
+            />
+            3D preview
+          </label>
+          {showPreview && <TwistyViewer scramble={scramble} />}
+          <SolvePanel
+            solves={solves}
+            onSetPenalty={setPenalty}
+            onDelete={deleteSolve}
+          />
+        </aside>
+      </div>
     </main>
   );
 }

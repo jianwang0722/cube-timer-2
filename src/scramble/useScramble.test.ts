@@ -18,7 +18,9 @@ const FAKES = ["R U", "L D", "F B"];
 beforeEach(() => {
   vi.clearAllMocks();
   let n = 0;
-  nextScrambleMock.mockImplementation(() => Promise.resolve(new Alg(FAKES[n++ % FAKES.length])));
+  nextScrambleMock.mockImplementation(() =>
+    Promise.resolve(new Alg(FAKES[n++ % FAKES.length])),
+  );
 });
 
 test("loads the first scramble and warms up the queue", async () => {

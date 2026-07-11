@@ -9,5 +9,5 @@ export type { TimerConfig, TimerEvent, TimerState } from "./machine";
 export { formatInspection, formatTimeMs } from "./format";
 export { displayTime } from "./solve";
 export type { Penalty, Solve } from "./solve";
-export { useTimer } from "./useTimer";
+export { isEditableTarget, useTimer } from "./useTimer";
 export type { SolveResult, UseTimerOptions, UseTimerResult } from "./useTimer";

@@ -47,5 +47,11 @@ export function TwistyViewer({ scramble, alg }: TwistyViewerProps) {
     player.alg = alg ?? "";
   }, [playerReady, scramble, alg]);
 
-  return <div className="twisty-viewer" ref={containerRef} aria-label="3D cube preview" />;
+  return (
+    <div
+      className="twisty-viewer"
+      ref={containerRef}
+      aria-label="3D cube preview"
+    />
+  );
 }

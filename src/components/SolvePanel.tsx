@@ -41,7 +41,9 @@ export function SolvePanel({
           .slice()
           .reverse()
           .map((solve) => (
-            <li key={solve.id}>{displayTime(solve)}</li>
+            <li key={solve.id} title={solve.scramble}>
+              {displayTime(solve)}
+            </li>
           ))}
       </ol>
     </section>
