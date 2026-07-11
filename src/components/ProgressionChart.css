@@ -1,0 +1,100 @@
+.chart {
+  margin: 0;
+  width: 16rem;
+  position: relative;
+}
+
+.chart__plot {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.chart__grid {
+  stroke: #2c2c2a;
+  stroke-width: 1;
+}
+
+.chart__tick {
+  fill: #898781;
+  font-size: 8px;
+  text-anchor: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart__raw {
+  fill: none;
+  stroke: #898781;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.chart__ao12 {
+  fill: none;
+  stroke: #3987e5;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.chart__crosshair {
+  stroke: #898781;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.chart__dot {
+  fill: #898781;
+  stroke: #16161d; /* surface ring */
+  stroke-width: 2;
+}
+
+.chart__tooltip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.75rem;
+  background: #26262e;
+  border-radius: 0.25rem;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart__legend {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: #898781;
+  margin-top: 0.25rem;
+}
+
+.chart__key {
+  display: inline-block;
+  width: 14px;
+  height: 0;
+  border-top: 2px solid;
+}
+
+.chart__key--raw {
+  border-color: #898781;
+  margin-left: 0.35rem;
+}
+
+.chart__key--ao12 {
+  border-color: #3987e5;
+  margin-left: 0.75rem;
+}
+
+.chart__key--raw:first-child {
+  margin-left: 0;
+}

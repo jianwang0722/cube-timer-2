@@ -16,7 +16,11 @@ test("empty session has null stats", () => {
 });
 
 test("single current/best/worst track effective times", () => {
-  const stats = computeStats([ok(12000), ok(9000), { timeMs: 9000, penalty: "+2" }]);
+  const stats = computeStats([
+    ok(12000),
+    ok(9000),
+    { timeMs: 9000, penalty: "+2" },
+  ]);
   expect(stats.single.current).toBe(11000); // +2 applied
   expect(stats.single.best).toBe(9000);
   expect(stats.worstSingle).toBe(12000);
@@ -33,7 +37,15 @@ test("best ao5 scans every window and ignores DNF windows", () => {
   // First five average 12 (drop 10, 50); last five (11,12,13,50,9) -> drop 9,50 -> 12
   // Middle window (12,13,50,9,8)? windows: use explicit sequence where an
   // early window is best.
-  const solves = [ok(10000), ok(11000), ok(12000), ok(13000), ok(50000), dnf, dnf];
+  const solves = [
+    ok(10000),
+    ok(11000),
+    ok(12000),
+    ok(13000),
+    ok(50000),
+    dnf,
+    dnf,
+  ];
   const stats = computeStats(solves);
   // current ao5 window (13000, 50000, dnf, dnf) has two DNFs -> DNF
   expect(stats.ao5.current).toBe("DNF");
@@ -71,7 +83,9 @@ test("a DNF latest solve never flags a PB", () => {
 });
 
 test("1000-solve sessions compute quickly", () => {
-  const solves = Array.from({ length: 1000 }, (_, i) => ok(10000 + (i % 97) * 25));
+  const solves = Array.from({ length: 1000 }, (_, i) =>
+    ok(10000 + (i % 97) * 25),
+  );
   const start = performance.now();
   computeStats(solves);
   computePbFlags(solves);

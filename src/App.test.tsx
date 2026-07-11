@@ -225,7 +225,9 @@ test("stats panel computes ao5 with a +2 per WCA rules", () => {
 
   const ao5 = document.querySelector('[data-stat="ao5-current"]');
   expect(ao5).toHaveTextContent("11.67");
-  expect(document.querySelector('[data-stat="single-best"]')).toHaveTextContent("9.00");
+  expect(document.querySelector('[data-stat="single-best"]')).toHaveTextContent(
+    "9.00",
+  );
 });
 
 test("a new PB single gets the highlight class", () => {
@@ -236,9 +238,9 @@ test("a new PB single gets the highlight class", () => {
     "stats__value--pb",
   );
   completeSolve(15000); // not a PB
-  expect(document.querySelector('[data-stat="single-current"]')).not.toHaveClass(
-    "stats__value--pb",
-  );
+  expect(
+    document.querySelector('[data-stat="single-current"]'),
+  ).not.toHaveClass("stats__value--pb");
 });
 
 test("sessions keep separate solves and switching works", () => {

@@ -40,7 +40,10 @@ export function meanOf3(solves: readonly StatSolve[]): StatResult {
  * best and single worst, average the rest. A DNF counts as the worst; two or
  * more DNFs make the average DNF.
  */
-export function trimmedAverage(solves: readonly StatSolve[], n: number): StatResult {
+export function trimmedAverage(
+  solves: readonly StatSolve[],
+  n: number,
+): StatResult {
   if (solves.length < n) return null;
   const window = solves.slice(-n);
 

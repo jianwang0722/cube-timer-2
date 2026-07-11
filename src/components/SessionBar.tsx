@@ -99,7 +99,11 @@ export function SessionBar({
           <button
             type="button"
             onClick={() => {
-              if (confirm(`Delete session "${currentSession.name}" and its solves?`)) {
+              if (
+                confirm(
+                  `Delete session "${currentSession.name}" and its solves?`,
+                )
+              ) {
                 onDelete(currentSession.id);
               }
             }}

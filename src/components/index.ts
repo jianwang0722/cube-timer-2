@@ -1,3 +1,4 @@
+export { ProgressionChart } from "./ProgressionChart";
 export { ScrambleDisplay } from "./ScrambleDisplay";
 export { SessionBar } from "./SessionBar";
 export { SolvePanel } from "./SolvePanel";

@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Penalty, SolveResult } from "../timer";
-import { computePbFlags, computeStats, type PbFlags, type SessionStats } from "./stats";
+import {
+  computePbFlags,
+  computeStats,
+  type PbFlags,
+  type SessionStats,
+} from "./stats";
 import {
   isSession,
   localStorageStore,
@@ -34,22 +39,30 @@ export interface UseSessionsResult {
   importSession: (json: string) => boolean;
 }
 
-export function useSessions(store: SessionStore = localStorageStore): UseSessionsResult {
-  const [data, setData] = useState<PersistedData>(() => store.load() ?? defaultData());
+export function useSessions(
+  store: SessionStore = localStorageStore,
+): UseSessionsResult {
+  const [data, setData] = useState<PersistedData>(
+    () => store.load() ?? defaultData(),
+  );
 
   useEffect(() => {
     store.save(data);
   }, [store, data]);
 
   const currentSession =
-    data.sessions.find((s) => s.id === data.currentSessionId) ?? data.sessions[0];
+    data.sessions.find((s) => s.id === data.currentSessionId) ??
+    data.sessions[0];
 
-  const updateSession = useCallback((sessionId: string, fn: (s: Session) => Session) => {
-    setData((prev) => ({
-      ...prev,
-      sessions: prev.sessions.map((s) => (s.id === sessionId ? fn(s) : s)),
-    }));
-  }, []);
+  const updateSession = useCallback(
+    (sessionId: string, fn: (s: Session) => Session) => {
+      setData((prev) => ({
+        ...prev,
+        sessions: prev.sessions.map((s) => (s.id === sessionId ? fn(s) : s)),
+      }));
+    },
+    [],
+  );
 
   const addSolve = useCallback(
     ({ timeMs, penalty }: SolveResult, scramble: string) => {
@@ -121,8 +134,11 @@ export function useSessions(store: SessionStore = localStorageStore): UseSession
     setData((prev) => {
       const remaining = prev.sessions.filter((s) => s.id !== sessionId);
       // Never end up with zero sessions.
-      const sessions = remaining.length > 0 ? remaining : [makeSession("Session 1")];
-      const currentSessionId = sessions.some((s) => s.id === prev.currentSessionId)
+      const sessions =
+        remaining.length > 0 ? remaining : [makeSession("Session 1")];
+      const currentSessionId = sessions.some(
+        (s) => s.id === prev.currentSessionId,
+      )
         ? prev.currentSessionId
         : sessions[0].id;
       return { ...prev, sessions, currentSessionId };
@@ -170,7 +186,10 @@ export function useSessions(store: SessionStore = localStorageStore): UseSession
     return true;
   }, []);
 
-  const stats = useMemo(() => computeStats(currentSession.solves), [currentSession.solves]);
+  const stats = useMemo(
+    () => computeStats(currentSession.solves),
+    [currentSession.solves],
+  );
   const pbFlags = useMemo(
     () => computePbFlags(currentSession.solves),
     [currentSession.solves],

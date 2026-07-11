@@ -1,9 +1,4 @@
-export {
-  effectiveMs,
-  formatStat,
-  meanOf3,
-  trimmedAverage,
-} from "./average";
+export { effectiveMs, formatStat, meanOf3, trimmedAverage } from "./average";
 export type { StatResult, StatSolve } from "./average";
 export { computePbFlags, computeStats } from "./stats";
 export type { PbFlags, SessionStats, StatKey, StatPair } from "./stats";

@@ -35,14 +35,22 @@ function PenaltyButtons({
           {p}
         </button>
       ))}
-      <button type="button" aria-label={deleteLabel} onClick={() => onDelete(solve.id)}>
+      <button
+        type="button"
+        aria-label={deleteLabel}
+        onClick={() => onDelete(solve.id)}
+      >
         Delete
       </button>
     </div>
   );
 }
 
-export function SolvePanel({ solves, onSetPenalty, onDelete }: SolvePanelProps) {
+export function SolvePanel({
+  solves,
+  onSetPenalty,
+  onDelete,
+}: SolvePanelProps) {
   const [detailId, setDetailId] = useState<string | null>(null);
   const last = solves.at(-1);
   const detail = solves.find((s) => s.id === detailId);
@@ -79,8 +87,12 @@ export function SolvePanel({ solves, onSetPenalty, onDelete }: SolvePanelProps) 
       {detail && (
         <dialog open className="solve-detail" aria-label="Solve detail">
           <p className="solve-detail__time">{displayTime(detail)}</p>
-          <p className="solve-detail__scramble">{detail.scramble || "(no scramble)"}</p>
-          <p className="solve-detail__date">{new Date(detail.date).toLocaleString()}</p>
+          <p className="solve-detail__scramble">
+            {detail.scramble || "(no scramble)"}
+          </p>
+          <p className="solve-detail__date">
+            {new Date(detail.date).toLocaleString()}
+          </p>
           <PenaltyButtons
             solve={detail}
             onSetPenalty={onSetPenalty}

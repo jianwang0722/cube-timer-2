@@ -67,7 +67,12 @@ test("creates, renames, switches, and deletes sessions", () => {
   expect(result.current.currentSession.name).toBe("OH practice");
   expect(result.current.currentSession.solves).toHaveLength(0);
 
-  act(() => result.current.renameSession(result.current.currentSession.id, "One-handed"));
+  act(() =>
+    result.current.renameSession(
+      result.current.currentSession.id,
+      "One-handed",
+    ),
+  );
   expect(result.current.currentSession.name).toBe("One-handed");
 
   act(() => result.current.switchSession(firstId));

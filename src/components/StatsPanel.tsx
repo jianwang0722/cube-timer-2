@@ -1,4 +1,9 @@
-import { formatStat, type PbFlags, type SessionStats, type StatKey } from "../stats";
+import {
+  formatStat,
+  type PbFlags,
+  type SessionStats,
+  type StatKey,
+} from "../stats";
 import "./StatsPanel.css";
 
 interface StatsPanelProps {

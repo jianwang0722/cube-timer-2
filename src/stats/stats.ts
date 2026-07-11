@@ -56,10 +56,18 @@ export function computeStats(solves: readonly StatSolve[]): SessionStats {
   const single: StatPair = {
     current: times.at(-1) ?? null,
     best:
-      solves.length === 0 ? null : numeric.length === 0 ? "DNF" : Math.min(...numeric),
+      solves.length === 0
+        ? null
+        : numeric.length === 0
+          ? "DNF"
+          : Math.min(...numeric),
   };
   const worstSingle: StatResult =
-    solves.length === 0 ? null : numeric.length === 0 ? "DNF" : Math.max(...numeric);
+    solves.length === 0
+      ? null
+      : numeric.length === 0
+        ? "DNF"
+        : Math.max(...numeric);
 
   const pair = (
     n: number,
@@ -86,7 +94,13 @@ export function computeStats(solves: readonly StatSolve[]): SessionStats {
  * all windows not including the latest solve.
  */
 export function computePbFlags(solves: readonly StatSolve[]): PbFlags {
-  const none: PbFlags = { single: false, mo3: false, ao5: false, ao12: false, ao100: false };
+  const none: PbFlags = {
+    single: false,
+    mo3: false,
+    ao5: false,
+    ao12: false,
+    ao100: false,
+  };
   if (solves.length === 0) return none;
   const now = computeStats(solves);
   const before = computeStats(solves.slice(0, -1));

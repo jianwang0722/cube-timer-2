@@ -26,7 +26,9 @@ function solve(overrides: Partial<Solve> = {}): Solve {
 const data: PersistedData = {
   version: 1,
   currentSessionId: "a",
-  sessions: [{ id: "a", name: "Main", createdAt: 1700000000000, solves: [solve()] }],
+  sessions: [
+    { id: "a", name: "Main", createdAt: 1700000000000, solves: [solve()] },
+  ],
 };
 
 test("round-trips through localStorage", () => {

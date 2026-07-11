@@ -44,7 +44,10 @@ test("ao5 drops the single best and single worst", () => {
 test("ao5 applies +2 before trimming", () => {
   // Effective: 12, 11, 12, 13, 9 -> drop 9 and 13 -> mean(12, 11, 12) = 11.666...67
   expect(
-    trimmedAverage([plus2(10000), ok(11000), ok(12000), ok(13000), ok(9000)], 5),
+    trimmedAverage(
+      [plus2(10000), ok(11000), ok(12000), ok(13000), ok(9000)],
+      5,
+    ),
   ).toBe(11670);
 });
 
@@ -56,11 +59,13 @@ test("one DNF counts as the worst and is dropped", () => {
 });
 
 test("two DNFs make the average DNF", () => {
-  expect(
-    trimmedAverage([ok(10000), ok(11000), ok(12000), dnf, dnf], 5),
-  ).toBe("DNF");
+  expect(trimmedAverage([ok(10000), ok(11000), ok(12000), dnf, dnf], 5)).toBe(
+    "DNF",
+  );
   // ...even in a bigger window.
-  const eleven = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19].map((s) => ok(s * 1000));
+  const eleven = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19].map((s) =>
+    ok(s * 1000),
+  );
   expect(trimmedAverage([...eleven, dnf, dnf], 12)).toBe("DNF");
 });
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  ProgressionChart,
   ScrambleDisplay,
   SessionBar,
   SolvePanel,
@@ -94,6 +95,7 @@ function App() {
           </label>
           {showPreview && <TwistyViewer scramble={scramble} />}
           <StatsPanel stats={stats} pbFlags={pbFlags} />
+          <ProgressionChart solves={currentSession.solves} />
           <SolvePanel
             solves={currentSession.solves}
             onSetPenalty={setPenalty}
