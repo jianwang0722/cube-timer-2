@@ -28,6 +28,7 @@ vi.mock("./components/TwistyViewer", () => ({
 }));
 
 beforeEach(() => {
+  localStorage.clear();
   vi.useFakeTimers({
     toFake: [
       "setTimeout",
@@ -120,7 +121,7 @@ test("penalty controls edit and delete the last solve", () => {
   fireEvent.click(screen.getByRole("button", { name: "OK" }));
   expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
 
-  fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+  fireEvent.click(screen.getByRole("button", { name: "Delete solve" }));
   expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
 });
 
@@ -203,4 +204,54 @@ test("3D preview follows the scramble and can be hidden", () => {
 
   fireEvent.click(screen.getByRole("checkbox", { name: "3D preview" }));
   expect(screen.getByTestId("twisty")).toBeInTheDocument();
+});
+
+test("solves survive unmount and remount via localStorage", () => {
+  const first = render(<App />);
+  completeSolve(10000);
+  expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
+  first.unmount();
+
+  render(<App />);
+  expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
+});
+
+test("stats panel computes ao5 with a +2 per WCA rules", () => {
+  render(<App />);
+  // Effective times: 12 (10+2), 11, 12, 13, 9 -> drop 9 & 13 -> ao5 11.67
+  completeSolve(10000);
+  fireEvent.click(screen.getByRole("button", { name: "+2" }));
+  for (const ms of [11000, 12000, 13000, 9000]) completeSolve(ms);
+
+  const ao5 = document.querySelector('[data-stat="ao5-current"]');
+  expect(ao5).toHaveTextContent("11.67");
+  expect(document.querySelector('[data-stat="single-best"]')).toHaveTextContent("9.00");
+});
+
+test("a new PB single gets the highlight class", () => {
+  render(<App />);
+  completeSolve(12000);
+  completeSolve(10000); // PB
+  expect(document.querySelector('[data-stat="single-current"]')).toHaveClass(
+    "stats__value--pb",
+  );
+  completeSolve(15000); // not a PB
+  expect(document.querySelector('[data-stat="single-current"]')).not.toHaveClass(
+    "stats__value--pb",
+  );
+});
+
+test("sessions keep separate solves and switching works", () => {
+  render(<App />);
+  completeSolve(10000);
+
+  fireEvent.click(screen.getByRole("button", { name: "New" }));
+  expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+  completeSolve(20000);
+  expect(screen.getByRole("listitem")).toHaveTextContent("20.00");
+
+  const select = screen.getByRole("combobox", { name: "Session" });
+  const first = (select as HTMLSelectElement).options[0].value;
+  fireEvent.change(select, { target: { value: first } });
+  expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
 });

@@ -1,0 +1,27 @@
+.stats__table {
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats__table th,
+.stats__table td {
+  padding: 0.15rem 0.6rem;
+  text-align: right;
+}
+
+.stats__table th[scope="row"] {
+  text-align: left;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.stats__value--pb {
+  color: #46a758;
+  font-weight: 700;
+}
+
+.stats__meta {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}

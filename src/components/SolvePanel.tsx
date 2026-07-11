@@ -31,7 +31,7 @@ export function SolvePanel({
               {p}
             </button>
           ))}
-          <button type="button" onClick={() => onDelete(last.id)}>
+          <button type="button" aria-label="Delete solve" onClick={() => onDelete(last.id)}>
             Delete
           </button>
         </div>

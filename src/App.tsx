@@ -1,53 +1,45 @@
 import { useEffect, useState } from "react";
 import {
   ScrambleDisplay,
+  SessionBar,
   SolvePanel,
+  StatsPanel,
   TimerDisplay,
   TwistyViewer,
 } from "./components";
 import { useScramble } from "./scramble";
-import {
-  isEditableTarget,
-  useTimer,
-  type Penalty,
-  type Solve,
-  type SolveResult,
-} from "./timer";
+import { useSessions } from "./stats";
+import { isEditableTarget, useTimer, type SolveResult } from "./timer";
 import "./App.css";
 
 function App() {
   const [inspectionEnabled, setInspectionEnabled] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
-  const [solves, setSolves] = useState<Solve[]>([]);
   const { scramble, advance } = useScramble();
+  const {
+    sessions,
+    currentSession,
+    stats,
+    pbFlags,
+    addSolve,
+    setPenalty,
+    deleteSolve,
+    createSession,
+    renameSession,
+    deleteSession,
+    switchSession,
+    exportSession,
+    importSession,
+  } = useSessions();
 
-  const addSolve = ({ timeMs, penalty }: SolveResult) => {
-    setSolves((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        timeMs,
-        penalty,
-        scramble: scramble?.toString() ?? "",
-        date: Date.now(),
-        sessionId: "", // interim: replaced by useSessions later in Phase 3
-
-      },
-    ]);
+  const onSolve = (result: SolveResult) => {
+    addSolve(result, scramble?.toString() ?? "");
     advance();
-  };
-
-  const setPenalty = (id: string, penalty: Penalty) => {
-    setSolves((prev) => prev.map((s) => (s.id === id ? { ...s, penalty } : s)));
-  };
-
-  const deleteSolve = (id: string) => {
-    setSolves((prev) => prev.filter((s) => s.id !== id));
   };
 
   const { state, displayMs, inspectionElapsedMs, surfaceProps } = useTimer({
     inspectionEnabled,
-    onSolve: addSolve,
+    onSolve,
   });
 
   // Hotkey N: new scramble, only between attempts (never mid-inspection/solve).
@@ -74,6 +66,16 @@ function App() {
           />
         </div>
         <aside className="side-panel">
+          <SessionBar
+            sessions={sessions}
+            currentSession={currentSession}
+            onSwitch={switchSession}
+            onCreate={createSession}
+            onRename={renameSession}
+            onDelete={deleteSession}
+            onExport={exportSession}
+            onImport={importSession}
+          />
           <label>
             <input
               type="checkbox"
@@ -91,8 +93,9 @@ function App() {
             3D preview
           </label>
           {showPreview && <TwistyViewer scramble={scramble} />}
+          <StatsPanel stats={stats} pbFlags={pbFlags} />
           <SolvePanel
-            solves={solves}
+            solves={currentSession.solves}
             onSetPenalty={setPenalty}
             onDelete={deleteSolve}
           />
