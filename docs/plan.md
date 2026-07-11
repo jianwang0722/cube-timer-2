@@ -59,18 +59,18 @@ A phase is DONE only when all acceptance criteria pass and
 
 ## Phase 3 — Sessions & statistics
 
-- [ ] Solve record: `{ id, timeMs, penalty: "OK" | "+2" | "DNF", scramble, date, sessionId }`
-- [ ] Persistence in IndexedDB (localStorage fallback acceptable for v1 if simpler)
-- [ ] Multiple named sessions; create / rename / delete / switch
-- [ ] Stats per WCA rules (see CLAUDE.md):
-  - [ ] single (best / worst / current)
-  - [ ] mo3, ao5, ao12, ao100 — trimmed mean: drop best and worst, average the rest
-  - [ ] DNF counts as worst; two DNFs in an ao5/ao12 window ⇒ average is DNF
-  - [ ] +2 adds 2000 ms to the recorded time before any average math
-- [ ] Solve list with per-solve detail view (time, scramble, date, penalty editing)
-- [ ] Personal bests (single and each average) with subtle highlight on new PB
-- [ ] Session export/import as JSON; export times as csTimer-compatible text (stretch)
-- [ ] Time distribution / progression chart (simple line or histogram)
+- [x] Solve record: `{ id, timeMs, penalty: "OK" | "+2" | "DNF", scramble, date, sessionId }`
+- [x] Persistence in IndexedDB (localStorage fallback acceptable for v1 if simpler) — localStorage v1 behind a `SessionStore` interface
+- [x] Multiple named sessions; create / rename / delete / switch
+- [x] Stats per WCA rules (see CLAUDE.md):
+  - [x] single (best / worst / current)
+  - [x] mo3, ao5, ao12, ao100 — trimmed mean: drop best and worst, average the rest
+  - [x] DNF counts as worst; two DNFs in an ao5/ao12 window ⇒ average is DNF
+  - [x] +2 adds 2000 ms to the recorded time before any average math
+- [x] Solve list with per-solve detail view (time, scramble, date, penalty editing)
+- [x] Personal bests (single and each average) with subtle highlight on new PB
+- [x] Session export/import as JSON; export times as csTimer-compatible text (stretch — not done)
+- [x] Time distribution / progression chart (simple line or histogram) — progression line with ao12 overlay
       **Acceptance criteria**
 - Unit tests for every average rule above, including DNF and +2 interactions
 - Refreshing the page loses nothing; 1,000+ solves in a session stays smooth
