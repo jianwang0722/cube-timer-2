@@ -1,0 +1,9 @@
+.twisty-viewer {
+  width: 16rem;
+  height: 12rem;
+}
+
+.twisty-viewer twisty-player {
+  width: 100%;
+  height: 100%;
+}

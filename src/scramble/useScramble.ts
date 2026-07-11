@@ -14,18 +14,22 @@ export function useScramble(): UseScrambleResult {
   // Increments on every advance; stale resolutions are dropped.
   const requestTokenRef = useRef(0);
 
-  const advance = useCallback(() => {
+  const request = useCallback(() => {
     const token = ++requestTokenRef.current;
-    setScramble(null);
     void nextScramble().then((alg) => {
       if (requestTokenRef.current === token) setScramble(alg);
     });
   }, []);
 
+  const advance = useCallback(() => {
+    setScramble(null);
+    request();
+  }, [request]);
+
   useEffect(() => {
     warmUp();
-    advance();
-  }, [advance]);
+    request();
+  }, [request]);
 
   return { scramble, advance };
 }
