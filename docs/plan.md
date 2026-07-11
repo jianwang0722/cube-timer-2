@@ -10,11 +10,11 @@ A phase is DONE only when all acceptance criteria pass and
 
 ## Phase 0 — Project scaffold
 
-- [ ] Vite + React + TypeScript (strict mode) project
-- [ ] ESLint + Prettier configured; scripts: `dev`, `build`, `typecheck`, `lint`, `test`
-- [ ] Vitest + React Testing Library set up with one passing smoke test
-- [ ] Folder structure created per CLAUDE.md (`timer/`, `scramble/`, `solver/`, `stats/`, `components/`)
-- [ ] `cubing` package installed; confirm `randomScrambleForEvent("333")` runs in the browser (it uses a web worker — verify the Vite config handles it)
+- [x] Vite + React + TypeScript (strict mode) project
+- [x] ESLint + Prettier configured; scripts: `dev`, `build`, `typecheck`, `lint`, `test`
+- [x] Vitest + React Testing Library set up with one passing smoke test
+- [x] Folder structure created per CLAUDE.md (`timer/`, `scramble/`, `solver/`, `stats/`, `components/`)
+- [x] `cubing` package installed; confirm `randomScrambleForEvent("333")` runs in the browser (it uses a web worker — verify the Vite config handles it)
       **Acceptance criteria**
 - `npm run dev` serves a blank app shell with no console errors
 - A throwaway page can log a random-state 3x3 scramble to the console
