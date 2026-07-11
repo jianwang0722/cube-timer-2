@@ -23,16 +23,16 @@ A phase is DONE only when all acceptance criteria pass and
 
 ## Phase 1 — Timer core
 
-- [ ] Timer state machine: `idle → armed → (inspection) → ready → running → stopped`
-- [ ] Spacebar hold-to-arm: holding ≥ 300 ms turns the display green (ready); release starts the timer; any key stops it
-- [ ] Touch support: same semantics with press-and-hold anywhere on the timer area (mobile)
-- [ ] Optional 15 s WCA inspection mode (toggle in settings)
-  - [ ] Audible/visual warnings at 8 s and 12 s
-  - [ ] Start between 15–17 s → +2 penalty; after 17 s → DNF
-- [ ] All timing via `performance.now()`; display truncates to centiseconds
-- [ ] Display formats: `9.58`, `59.99`, `1:00.42`, `12:34.56`
-- [ ] Manual penalty controls on the last solve: OK / +2 / DNF, and delete solve
-- [ ] Keyboard input is ignored while typing in inputs/settings
+- [x] Timer state machine: `idle → armed → (inspection) → ready → running → stopped`
+- [x] Spacebar hold-to-arm: holding ≥ 300 ms turns the display green (ready); release starts the timer; any key stops it
+- [x] Touch support: same semantics with press-and-hold anywhere on the timer area (mobile)
+- [x] Optional 15 s WCA inspection mode (toggle in settings)
+  - [x] Audible/visual warnings at 8 s and 12 s (visual only for now; audio deferred to Phase 4's sound setting)
+  - [x] Start between 15–17 s → +2 penalty; after 17 s → DNF
+- [x] All timing via `performance.now()`; display truncates to centiseconds
+- [x] Display formats: `9.58`, `59.99`, `1:00.42`, `12:34.56`
+- [x] Manual penalty controls on the last solve: OK / +2 / DNF, and delete solve
+- [x] Keyboard input is ignored while typing in inputs/settings
       **Acceptance criteria**
 - Unit tests: state machine transitions, penalty application, display formatting edge cases (59.994 → `59.99`, not `1:00.00` — truncate, don't round)
 - Holding space < 300 ms and releasing does NOT start the timer
