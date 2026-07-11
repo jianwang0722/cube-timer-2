@@ -8,6 +8,7 @@ export interface Solve {
   penalty: Penalty;
   scramble: string;
   date: number;
+  sessionId: string;
 }
 
 /** Display string for a solve result: "12.34", "14.34+" (+2 applied), or "DNF". */

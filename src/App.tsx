@@ -30,6 +30,8 @@ function App() {
         penalty,
         scramble: scramble?.toString() ?? "",
         date: Date.now(),
+        sessionId: "", // interim: replaced by useSessions later in Phase 3
+
       },
     ]);
     advance();
