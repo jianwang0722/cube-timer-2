@@ -1,0 +1,24 @@
+.timer-display {
+  font-size: clamp(4rem, 18vw, 9rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+}
+
+.timer-display--armed {
+  color: #e5484d;
+}
+
+.timer-display--ready {
+  color: #46a758;
+}
+
+.timer-display--warning8 {
+  color: #ffb224;
+}
+
+.timer-display--warning12 {
+  color: #e5484d;
+}
