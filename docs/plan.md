@@ -42,14 +42,14 @@ A phase is DONE only when all acceptance criteria pass and
 
 ## Phase 2 — Scrambles + 3D preview
 
-- [ ] `src/scramble/` module wrapping `cubing/scramble`: `nextScramble(): Promise<Alg>`
-- [ ] New scramble generated automatically after each solve; button + hotkey to re-scramble
-- [ ] Scramble displayed as large, readable move text (WCA notation)
-- [ ] `<twisty-player>` component (`src/components/TwistyViewer`) showing the scrambled state
-  - [ ] React wrapper handles the web component lifecycle and prop updates
-  - [ ] Hidden/collapsed option for users who consider it a distraction
-- [ ] Scramble is pre-fetched in the background so there's zero wait after a solve
-- [ ] Copy-scramble-to-clipboard button
+- [x] `src/scramble/` module wrapping `cubing/scramble`: `nextScramble(): Promise<Alg>`
+- [x] New scramble generated automatically after each solve; button + hotkey to re-scramble (N)
+- [x] Scramble displayed as large, readable move text (WCA notation)
+- [x] `<twisty-player>` component (`src/components/TwistyViewer`) showing the scrambled state
+  - [x] React wrapper handles the web component lifecycle and prop updates
+  - [x] Hidden/collapsed option for users who consider it a distraction
+- [x] Scramble is pre-fetched in the background so there's zero wait after a solve
+- [x] Copy-scramble-to-clipboard button
       **Acceptance criteria**
 - Scrambles are random-state (from `cubing/scramble`), never hand-rolled random moves
 - The 3D preview always matches the displayed scramble text (test: apply scramble to a KPuzzle/model and compare state, not just trust the component)
