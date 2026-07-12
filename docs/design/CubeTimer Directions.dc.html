@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@200;300;400;500&amp;family=Instrument+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@200;300;400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1c1c1f;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:#9ecbff;text-decoration:none}a:hover{color:#c4defc}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(255,255,255,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#f2f2f2;color:#141414;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 'Instrument Sans',sans-serif;color:#ececec}
+.dv-opts{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(255,255,255,.14);color:#ececec;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11.5px/1.3 'Instrument Sans',sans-serif;color:rgba(255,255,255,.6)}
+.dv-card{max-width:100%;background:#111;border:1px solid rgba(255,255,255,.12);border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.4);overflow:hidden}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.5 'Instrument Sans',sans-serif;color:rgba(255,255,255,.5)}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">All six timer states in the <a class="dv-oid" href="#2a">2a</a> direction — note: zero layout shift between states</span></div>
+<div class="dv-opts">
+
+<!-- 3a IDLE -->
+<div class="dv-opt" id="3a">
+<div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>1 · Idle — scramble up, waiting</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#9A9AA1"><span style="display:flex;align-items:center;gap:8px;color:#E8E8EA"><span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>3×3 Main ▾</span><span style="color:#6B6B72">settings</span></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap;color:#C9C9CE">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #048</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em">12.47</div>
+    <div style="height:34px;display:flex;align-items:center;font-size:12px;color:#55555C;letter-spacing:.14em;text-transform:uppercase">hold space</div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #232327;display:flex;flex-direction:column">
+    <div style="padding:16px 22px;border-bottom:1px solid #232327;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">preview</span><span style="color:#55555C;font-size:12px">collapse ▴</span></div>
+    <div style="display:flex;justify-content:center;padding:18px 0 10px">
+      <div style="width:132px;height:120px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:76px;height:76px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(38px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b><b style="background:#00A94F"></b><b style="background:#00A94F"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(38px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(38px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#FF5800"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 22px 8px;border-top:1px solid #232327;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72"><span>session</span><span style="font-variant-numeric:tabular-nums">47</span></div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums"><span style="color:#48484F">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">44</span><span>10.53</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">43</span><span style="color:#D6303F">DNF</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">42</span><span>11.21</span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid #232327;display:grid;grid-template-columns:repeat(4,1fr)">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">single</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">12.47</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best <span style="color:#00A94F;font-family:'Azeret Mono',monospace">6.54</span></div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao5</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.03</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 9.18</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao12</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.48</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 10.02</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao100</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.92</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 11.10</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 3b ARMED -->
+<div class="dv-opt" id="3b">
+<div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>2 · Armed — spacebar held 300ms, digits go ready-green</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em;opacity:.45">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#9A9AA1;opacity:.45"><span style="display:flex;align-items:center;gap:8px;color:#E8E8EA"><span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>3×3 Main ▾</span><span style="color:#6B6B72">settings</span></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap;color:#C9C9CE">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #048</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:#00C55B">0.00</div>
+    <div style="height:34px;display:flex;align-items:center;font-size:12px;color:#00A94F;letter-spacing:.14em;text-transform:uppercase">release to start</div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #232327;display:flex;flex-direction:column;opacity:.45">
+    <div style="padding:16px 22px;border-bottom:1px solid #232327;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">preview</span><span style="color:#55555C;font-size:12px">collapse ▴</span></div>
+    <div style="display:flex;justify-content:center;padding:18px 0 10px">
+      <div style="width:132px;height:120px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:76px;height:76px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(38px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b><b style="background:#00A94F"></b><b style="background:#00A94F"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(38px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(38px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#FF5800"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 22px 8px;border-top:1px solid #232327;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72"><span>session</span><span style="font-variant-numeric:tabular-nums">47</span></div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums"><span style="color:#48484F">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">44</span><span>10.53</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">43</span><span style="color:#D6303F">DNF</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">42</span><span>11.21</span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid #232327;display:grid;grid-template-columns:repeat(4,1fr);opacity:.45">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">single</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">12.47</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best <span style="color:#00A94F;font-family:'Azeret Mono',monospace">6.54</span></div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao5</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.03</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 9.18</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao12</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.48</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 10.02</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao100</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.92</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 11.10</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 3c INSPECTION -->
+<div class="dv-opt" id="3c">
+<div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>3 · Inspection — counts 15→0; digits white, yellow at 8s elapsed, orange at 12s (shown: 9s elapsed)</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327;opacity:.3">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#9A9AA1"><span style="display:flex;align-items:center;gap:8px;color:#E8E8EA"><span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>3×3 Main ▾</span><span style="color:#6B6B72">settings</span></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327;opacity:.3">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap;color:#C9C9CE">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #048</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <div style="font-size:12px;color:#FFD500;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2px">inspection</div>
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:#FFD500">6</div>
+    <div style="height:34px;display:flex;align-items:center;gap:3px">
+      <span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#3A3A40;display:inline-block"></span><span style="width:14px;height:3px;background:#FFD500;display:inline-block"></span><span style="width:14px;height:3px;background:#FFD500;display:inline-block"></span><span style="width:14px;height:3px;background:#FFD500;display:inline-block"></span><span style="width:14px;height:3px;background:#FFD500;display:inline-block"></span><span style="width:14px;height:3px;background:#FF5800;display:inline-block"></span><span style="width:14px;height:3px;background:#FF5800;display:inline-block"></span><span style="width:14px;height:3px;background:#FF5800;display:inline-block"></span>
+    </div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #232327;opacity:.3;display:flex;flex-direction:column">
+    <div style="padding:16px 22px;border-bottom:1px solid #232327;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">preview</span><span style="color:#55555C;font-size:12px">collapse ▴</span></div>
+    <div style="padding:14px 22px 8px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72"><span>session</span><span style="font-variant-numeric:tabular-nums">47</span></div>
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums"><span style="color:#48484F">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid #232327;display:grid;grid-template-columns:repeat(4,1fr);opacity:.3">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">single</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">12.47</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao5</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.03</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao12</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.48</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao100</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.92</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 3d RUNNING -->
+<div class="dv-opt" id="3d">
+<div class="dv-olabel"><a class="dv-oid" href="#3d">3d</a>4 · Running — built-in focus mode, everything recedes to 7%</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;border-bottom:1px solid #18181B;display:flex;align-items:center;padding:0 26px;opacity:.07"><div style="font:500 15px 'Azeret Mono',monospace">cubetimer</div></div>
+  <div style="border-bottom:1px solid #18181B"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em">8.31</div>
+    <div style="height:34px"></div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #18181B;opacity:.07;padding:16px 22px"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">session · 47</span></div>
+  <div style="grid-column:1;border-top:1px solid #18181B;display:grid;grid-template-columns:repeat(4,1fr);opacity:.07">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">single</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">ao5</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">ao12</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">ao100</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 3e STOPPED -->
+<div class="dv-opt" id="3e">
+<div class="dv-olabel"><a class="dv-oid" href="#3e">3e</a>5 · Stopped — result posted, penalty controls, next scramble already up</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#9A9AA1"><span style="display:flex;align-items:center;gap:8px;color:#E8E8EA"><span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>3×3 Main ▾</span><span style="color:#6B6B72">settings</span></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap;color:#C9C9CE">F R2 U' L D2 B U2 R' F2 L2 D R</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #049</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em">11.94</div>
+    <div style="height:34px;display:flex;align-items:center;gap:10px">
+      <span style="font:500 13px 'Instrument Sans',sans-serif;background:#232327;color:#E8E8EA;border:1px solid #2E2E33;border-radius:6px;padding:6px 18px">OK</span>
+      <span style="font:500 13px 'Instrument Sans',sans-serif;color:#FF5800;border:1px solid #2E2E33;border-radius:6px;padding:6px 14px">+2</span>
+      <span style="font:500 13px 'Instrument Sans',sans-serif;color:#D6303F;border:1px solid #2E2E33;border-radius:6px;padding:6px 12px">DNF</span>
+    </div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #232327;display:flex;flex-direction:column">
+    <div style="padding:16px 22px;border-bottom:1px solid #232327;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">preview</span><span style="color:#55555C;font-size:12px">collapse ▴</span></div>
+    <div style="display:flex;justify-content:center;padding:18px 0 10px">
+      <div style="width:132px;height:120px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:76px;height:76px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(38px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#FFD500"></b><b style="background:#2464D1"></b><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#00A94F"></b><b style="background:#D6303F"></b><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#2464D1"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(38px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#D6303F"></b><b style="background:#FFD500"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#00A94F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(38px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#2464D1"></b><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 22px 8px;border-top:1px solid #232327;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72"><span>session</span><span style="font-variant-numeric:tabular-nums">48</span></div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;background:#18181B"><span style="color:#48484F">48</span><span>11.94</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">44</span><span>10.53</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">43</span><span style="color:#D6303F">DNF</span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid #232327;display:grid;grid-template-columns:repeat(4,1fr)">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">single</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.94</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best <span style="color:#00A94F;font-family:'Azeret Mono',monospace">6.54</span></div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao5</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">10.87</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 9.18</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao12</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.39</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 10.02</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao100</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.90</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 11.10</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 3f NEW PB -->
+<div class="dv-opt" id="3f">
+<div class="dv-olabel"><a class="dv-oid" href="#3f">3f</a>6 · New personal best — green digits, WCA strip, delta vs old PB</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#9A9AA1"><span style="display:flex;align-items:center;gap:8px;color:#E8E8EA"><span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>3×3 Main ▾</span><span style="color:#6B6B72">settings</span></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap;color:#C9C9CE">F R2 U' L D2 B U2 R' F2 L2 D R</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #049</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse 620px 340px at 50% 52%,rgba(0,169,79,.09),transparent 70%)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font:600 11px 'Instrument Sans',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#00C55B;border:1px solid rgba(0,197,91,.4);border-radius:99px;padding:5px 14px">new personal best</span>
+      <span style="font:400 12px 'Azeret Mono',monospace;color:#6B6B72;font-variant-numeric:tabular-nums">was 6.54 · −0.31</span>
+    </div>
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:#00C55B">6.23</div>
+    <div style="display:flex;gap:2px;margin-top:2px"><span style="width:22px;height:2px;background:#E8E8E8;display:inline-block"></span><span style="width:22px;height:2px;background:#FFD500;display:inline-block"></span><span style="width:22px;height:2px;background:#00A94F;display:inline-block"></span><span style="width:22px;height:2px;background:#2464D1;display:inline-block"></span><span style="width:22px;height:2px;background:#D6303F;display:inline-block"></span><span style="width:22px;height:2px;background:#FF5800;display:inline-block"></span></div>
+    <div style="height:20px;display:flex;align-items:center;gap:10px">
+      <span style="font:500 13px 'Instrument Sans',sans-serif;background:#232327;color:#E8E8EA;border:1px solid #2E2E33;border-radius:6px;padding:6px 18px">OK</span>
+      <span style="font:500 13px 'Instrument Sans',sans-serif;color:#FF5800;border:1px solid #2E2E33;border-radius:6px;padding:6px 14px">+2</span>
+      <span style="font:500 13px 'Instrument Sans',sans-serif;color:#D6303F;border:1px solid #2E2E33;border-radius:6px;padding:6px 12px">DNF</span>
+    </div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #232327;display:flex;flex-direction:column">
+    <div style="padding:16px 22px;border-bottom:1px solid #232327;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">preview</span><span style="color:#55555C;font-size:12px">collapse ▴</span></div>
+    <div style="display:flex;justify-content:center;padding:18px 0 10px">
+      <div style="width:132px;height:120px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:76px;height:76px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(38px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#FFD500"></b><b style="background:#2464D1"></b><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#00A94F"></b><b style="background:#D6303F"></b><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#2464D1"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(38px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#D6303F"></b><b style="background:#FFD500"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#00A94F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(38px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#2464D1"></b><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 22px 8px;border-top:1px solid #232327;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72"><span>session</span><span style="font-variant-numeric:tabular-nums">48</span></div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;background:#18181B"><span style="color:#48484F">48</span><span style="color:#00C55B">6.23</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">44</span><span>10.53</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">43</span><span style="color:#D6303F">DNF</span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid #232327;display:grid;grid-template-columns:repeat(4,1fr)">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">single</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#00C55B">6.23</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best <span style="color:#00A94F;font-family:'Azeret Mono',monospace">6.23</span></div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao5</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">10.11</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 9.18</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao12</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.12</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 10.02</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao100</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.85</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 11.10</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "mobile versions of these states" · "secondary screens: solve detail, stats chart, example solve" · "make an interactive prototype of the timer"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Merge: <a class="dv-oid" href="#1b">1b</a>'s layout in <a class="dv-oid" href="#1a">1a</a>'s graphite palette + Azeret Mono</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Gridline structure · graphite monochrome · Azeret Mono digits · green for PBs only</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Instrument Sans',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#9A9AA1">
+      <span style="display:flex;align-items:center;gap:8px;color:#E8E8EA"><span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>3×3 Main ▾</span>
+      <span style="color:#6B6B72">settings</span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #232327">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap;color:#C9C9CE">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #048</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <div style="font:300 176px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em">12.47</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.14em;text-transform:uppercase">hold space</div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid #232327;display:flex;flex-direction:column">
+    <div style="padding:16px 22px;border-bottom:1px solid #232327;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72">preview</span><span style="color:#55555C;font-size:12px">collapse ▴</span>
+    </div>
+    <div style="display:flex;justify-content:center;padding:18px 0 10px">
+      <div style="width:132px;height:120px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:76px;height:76px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(38px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b><b style="background:#00A94F"></b><b style="background:#00A94F"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(38px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(38px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:4px"><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#FF5800"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 22px 8px;border-top:1px solid #232327;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72"><span>session</span><span style="font-variant-numeric:tabular-nums">47</span></div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums"><span style="color:#48484F">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">44</span><span>10.53</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid #1C1C1F;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">43</span><span style="color:#D6303F">DNF</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#9A9AA1"><span style="color:#48484F">42</span><span>11.21</span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid #232327;display:grid;grid-template-columns:repeat(4,1fr)">
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">single</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">12.47</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best <span style="color:#00A94F;font-family:'Azeret Mono',monospace">6.54</span></div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao5</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.03</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 9.18</div></div>
+    <div style="padding:20px 26px;border-right:1px solid #232327"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao12</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.48</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 10.02</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B72;margin-bottom:8px">ao100</div><div style="font:400 30px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.92</div><div style="font-size:12px;color:#6B6B72;margin-top:4px;font-variant-numeric:tabular-nums">best 11.10</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "build out <a class="dv-oid" href="#2a">2a</a> with all six timer states + mobile" · "warmer hairlines" · "try the session list on the left instead"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">CubeTimer — three directions for the main screen (idle state, desktop)</span></div>
+<div class="dv-opts">
+
+<!-- ============ 1a GRAPHITE ============ -->
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Graphite — monochrome restraint, one green accent, Azeret Mono digits</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#121214;color:#E8E8EA;position:relative;display:flex;flex-direction:column;font-family:'Instrument Sans',sans-serif">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 28px 0">
+    <div style="font:500 15px 'Azeret Mono',monospace;letter-spacing:.02em">cubetimer</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9A9AA1;border:1px solid #2A2A2E;border-radius:99px;padding:6px 14px">
+      <span style="width:8px;height:8px;border-radius:2px;background:#00A94F;display:inline-block"></span>
+      <span>3×3 Main</span><span style="color:#55555C">▾</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px;font-size:13px;color:#6B6B72"><span style="font-variant-numeric:tabular-nums">47 solves</span><span>settings</span></div>
+  </div>
+  <div style="text-align:center;margin-top:38px;font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.05em;color:#C9C9CE;white-space:nowrap">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;margin-top:-20px">
+    <div style="font:300 168px/1 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em">12.47</div>
+    <div style="font-size:12px;color:#55555C;letter-spacing:.08em;text-transform:uppercase">hold space to start</div>
+  </div>
+  <div style="display:flex;justify-content:center;gap:60px;margin-bottom:118px">
+    <div style="text-align:center"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6B6B72;margin-bottom:6px">single</div><div style="font:400 22px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">12.47</div><div style="font:400 12px 'Azeret Mono',monospace;color:#00A94F;margin-top:3px;font-variant-numeric:tabular-nums">6.54</div></div>
+    <div style="text-align:center"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6B6B72;margin-bottom:6px">ao5</div><div style="font:400 22px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.03</div><div style="font:400 12px 'Azeret Mono',monospace;color:#55555C;margin-top:3px;font-variant-numeric:tabular-nums">9.18</div></div>
+    <div style="text-align:center"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6B6B72;margin-bottom:6px">ao12</div><div style="font:400 22px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.48</div><div style="font:400 12px 'Azeret Mono',monospace;color:#55555C;margin-top:3px;font-variant-numeric:tabular-nums">10.02</div></div>
+    <div style="text-align:center"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6B6B72;margin-bottom:6px">ao100</div><div style="font:400 22px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums">11.92</div><div style="font:400 12px 'Azeret Mono',monospace;color:#55555C;margin-top:3px;font-variant-numeric:tabular-nums">11.10</div></div>
+  </div>
+  <div style="position:absolute;left:28px;bottom:22px;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#55555C">preview<span style="color:#3A3A40">—</span></div>
+    <div style="width:132px;height:126px;position:relative">
+      <div style="position:absolute;left:50%;top:56%;width:80px;height:80px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+        <div style="position:absolute;inset:0;transform:translateZ(40px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:5px"><b style="background:#00A94F;border-radius:1.5px"></b><b style="background:#E8E8E8;border-radius:1.5px"></b><b style="background:#D6303F;border-radius:1.5px"></b><b style="background:#2464D1;border-radius:1.5px"></b><b style="background:#00A94F;border-radius:1.5px"></b><b style="background:#FF5800;border-radius:1.5px"></b><b style="background:#FFD500;border-radius:1.5px"></b><b style="background:#00A94F;border-radius:1.5px"></b><b style="background:#00A94F;border-radius:1.5px"></b></div>
+        <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(40px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:5px"><b style="background:#E8E8E8;border-radius:1.5px"></b><b style="background:#FF5800;border-radius:1.5px"></b><b style="background:#2464D1;border-radius:1.5px"></b><b style="background:#FFD500;border-radius:1.5px"></b><b style="background:#E8E8E8;border-radius:1.5px"></b><b style="background:#E8E8E8;border-radius:1.5px"></b><b style="background:#D6303F;border-radius:1.5px"></b><b style="background:#2464D1;border-radius:1.5px"></b><b style="background:#FFD500;border-radius:1.5px"></b></div>
+        <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(40px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#09090A;border-radius:5px"><b style="background:#FF5800;border-radius:1.5px"></b><b style="background:#D6303F;border-radius:1.5px"></b><b style="background:#2464D1;border-radius:1.5px"></b><b style="background:#00A94F;border-radius:1.5px"></b><b style="background:#FFD500;border-radius:1.5px"></b><b style="background:#D6303F;border-radius:1.5px"></b><b style="background:#FF5800;border-radius:1.5px"></b><b style="background:#FF5800;border-radius:1.5px"></b><b style="background:#E8E8E8;border-radius:1.5px"></b></div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;right:28px;bottom:22px;text-align:right;font:400 13px 'Azeret Mono',monospace;font-variant-numeric:tabular-nums;color:#7C7C84;display:flex;flex-direction:column;gap:7px">
+    <div style="display:flex;gap:16px;justify-content:flex-end"><span style="color:#48484F">47</span><span style="color:#E8E8EA">12.47</span></div>
+    <div style="display:flex;gap:16px;justify-content:flex-end"><span style="color:#48484F">46</span><span>11.86</span></div>
+    <div style="display:flex;gap:16px;justify-content:flex-end"><span style="color:#48484F">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+    <div style="display:flex;gap:16px;justify-content:flex-end"><span style="color:#48484F">44</span><span>10.53</span></div>
+    <div style="display:flex;gap:16px;justify-content:flex-end"><span style="color:#48484F">43</span><span style="color:#D6303F">DNF</span></div>
+    <div style="display:flex;gap:16px;justify-content:flex-end"><span style="color:#48484F">42</span><span>11.21</span></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ============ 1b GRIDLINE ============ -->
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Gridline — warm dark instrument panel, visible hairline structure, Space Grotesk digits</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#171310;color:#EFE9DC;display:grid;grid-template-columns:1fr 292px;grid-template-rows:58px 92px 1fr 132px;font-family:'Space Grotesk',sans-serif">
+  <div style="grid-column:1/3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid rgba(239,233,220,.12)">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="font:700 16px 'Space Grotesk',sans-serif;letter-spacing:.06em">CUBETIMER</div>
+      <div style="display:flex;gap:2px"><span style="width:9px;height:3px;background:#E8E8E8;display:inline-block"></span><span style="width:9px;height:3px;background:#FFD500;display:inline-block"></span><span style="width:9px;height:3px;background:#00A94F;display:inline-block"></span><span style="width:9px;height:3px;background:#2464D1;display:inline-block"></span><span style="width:9px;height:3px;background:#D6303F;display:inline-block"></span><span style="width:9px;height:3px;background:#FF5800;display:inline-block"></span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:26px;font-size:13px;color:#A79F8F">
+      <span style="display:flex;align-items:center;gap:8px;color:#EFE9DC"><span style="width:7px;height:7px;border-radius:50%;background:#FFD500;display:inline-block"></span>3×3 Main ▾</span>
+      <span>settings</span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid rgba(239,233,220,.12)">
+    <div style="font:400 21px 'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+    <div style="font-size:12px;color:#807865;letter-spacing:.1em;text-transform:uppercase;font-variant-numeric:tabular-nums">12 moves · #048</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+    <div style="font:700 196px/1 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.04em">12.47</div>
+    <div style="font-size:12px;color:#807865;letter-spacing:.14em;text-transform:uppercase">hold space</div>
+  </div>
+  <div style="grid-row:2/5;grid-column:2;border-left:1px solid rgba(239,233,220,.12);display:flex;flex-direction:column">
+    <div style="padding:16px 22px;border-bottom:1px solid rgba(239,233,220,.12);display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#807865">preview</span><span style="color:#807865;font-size:12px">collapse ▴</span>
+    </div>
+    <div style="display:flex;justify-content:center;padding:18px 0 10px">
+      <div style="width:132px;height:120px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:76px;height:76px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(38px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#0C0A08;border-radius:4px"><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b><b style="background:#00A94F"></b><b style="background:#00A94F"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(38px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#0C0A08;border-radius:4px"><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(38px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;background:#0C0A08;border-radius:4px"><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#FF5800"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 22px 8px;border-top:1px solid rgba(239,233,220,.12);display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#807865"><span>session</span><span style="font-variant-numeric:tabular-nums">47</span></div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid rgba(239,233,220,.07);font:400 14px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums"><span style="color:#5E5748">47</span><span>12.47</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid rgba(239,233,220,.07);font:400 14px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;color:#C9C1B0"><span style="color:#5E5748">46</span><span>11.86</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid rgba(239,233,220,.07);font:400 14px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;color:#C9C1B0"><span style="color:#5E5748">45</span><span>16.02 <span style="color:#FF5800">+2</span></span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid rgba(239,233,220,.07);font:400 14px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;color:#C9C1B0"><span style="color:#5E5748">44</span><span>10.53</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;border-bottom:1px solid rgba(239,233,220,.07);font:400 14px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;color:#C9C1B0"><span style="color:#5E5748">43</span><span style="color:#D6303F">DNF</span></div>
+      <div style="display:flex;justify-content:space-between;padding:9px 22px;font:400 14px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;color:#C9C1B0"><span style="color:#5E5748">42</span><span>11.21</span></div>
+    </div>
+  </div>
+  <div style="grid-column:1;border-top:1px solid rgba(239,233,220,.12);display:grid;grid-template-columns:repeat(4,1fr)">
+    <div style="padding:20px 26px;border-right:1px solid rgba(239,233,220,.12)"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#807865;margin-bottom:8px">single</div><div style="font:500 32px 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums">12.47</div><div style="font-size:12px;color:#807865;margin-top:4px;font-variant-numeric:tabular-nums">best <span style="color:#FFD500">6.54</span></div></div>
+    <div style="padding:20px 26px;border-right:1px solid rgba(239,233,220,.12)"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#807865;margin-bottom:8px">ao5</div><div style="font:500 32px 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums">11.03</div><div style="font-size:12px;color:#807865;margin-top:4px;font-variant-numeric:tabular-nums">best 9.18</div></div>
+    <div style="padding:20px 26px;border-right:1px solid rgba(239,233,220,.12)"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#807865;margin-bottom:8px">ao12</div><div style="font:500 32px 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums">11.48</div><div style="font-size:12px;color:#807865;margin-top:4px;font-variant-numeric:tabular-nums">best 10.02</div></div>
+    <div style="padding:20px 26px"><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#807865;margin-bottom:8px">ao100</div><div style="font:500 32px 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums">11.92</div><div style="font-size:12px;color:#807865;margin-top:4px;font-variant-numeric:tabular-nums">best 11.10</div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ============ 1c PLEX LAB ============ -->
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Plex Lab — cool blue-black, all-mono lab equipment, maximum density</div>
+<div class="dv-card" style="width:1180px">
+<div style="width:1180px;height:720px;background:#0C0F14;color:#D9E0EA;font-family:'IBM Plex Mono',monospace;display:flex;flex-direction:column;padding:0 30px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0 14px;border-bottom:1px dotted #29313E;font-size:12px;letter-spacing:.06em;color:#5C6674">
+    <span style="color:#D9E0EA;font-weight:500">CUBETIMER<span style="color:#17C15B">_</span></span>
+    <span>SESSION <span style="color:#D9E0EA">MAIN-3X3 ▾</span></span>
+    <span>SOLVES <span style="color:#D9E0EA;font-variant-numeric:tabular-nums">047</span></span>
+    <span>MEAN <span style="color:#D9E0EA;font-variant-numeric:tabular-nums">11.87</span></span>
+    <span>SETTINGS</span>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 0;border-bottom:1px dotted #29313E">
+    <div>
+      <div style="font-size:10px;letter-spacing:.2em;color:#5C6674;margin-bottom:10px">SCRAMBLE 048 · 12 MOVES</div>
+      <div style="font:300 22px 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap;color:#EDF2F9">R U' F2 D L2 B' R2 U F' L D2 R'</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:120px;height:104px;position:relative">
+        <div style="position:absolute;left:50%;top:54%;width:68px;height:68px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-32deg) rotateY(-42deg)">
+          <div style="position:absolute;inset:0;transform:translateZ(34px);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:2px;background:#060809"><b style="background:#00A94F"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FF5800"></b><b style="background:#FFD500"></b><b style="background:#00A94F"></b><b style="background:#00A94F"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateX(90deg) translateZ(34px);filter:brightness(.85);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:2px;background:#060809"><b style="background:#E8E8E8"></b><b style="background:#FF5800"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b><b style="background:#E8E8E8"></b><b style="background:#E8E8E8"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#FFD500"></b></div>
+          <div style="position:absolute;inset:0;transform:rotateY(90deg) translateZ(34px);filter:brightness(.62);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;padding:2px;background:#060809"><b style="background:#FF5800"></b><b style="background:#D6303F"></b><b style="background:#2464D1"></b><b style="background:#00A94F"></b><b style="background:#FFD500"></b><b style="background:#D6303F"></b><b style="background:#FF5800"></b><b style="background:#FF5800"></b><b style="background:#E8E8E8"></b></div>
+        </div>
+      </div>
+      <div style="font-size:10px;letter-spacing:.15em;color:#5C6674;writing-mode:vertical-rl">HIDE ›</div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+    <div style="font:200 158px/1 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.05em;color:#EDF2F9">12.47</div>
+    <div style="font-size:11px;letter-spacing:.12em;color:#3E4756"><span style="border:1px solid #29313E;border-radius:3px;padding:2px 7px;color:#5C6674">SPACE</span> HOLD TO ARM · <span style="border:1px solid #29313E;border-radius:3px;padding:2px 7px;color:#5C6674">ESC</span> CANCEL</div>
+  </div>
+  <div style="display:flex;gap:0;border-top:1px dotted #29313E;padding:18px 0 20px">
+    <div style="flex:1.1;padding-right:30px;border-right:1px dotted #29313E">
+      <div style="display:flex;font-size:10px;letter-spacing:.18em;color:#5C6674;padding-bottom:10px"><span style="width:88px"></span><span style="flex:1;text-align:right">CURRENT</span><span style="flex:1;text-align:right">BEST</span><span style="flex:1;text-align:right">σ</span></div>
+      <div style="display:flex;font-size:15px;font-variant-numeric:tabular-nums;padding:5px 0"><span style="width:88px;color:#5C6674">single</span><span style="flex:1;text-align:right">12.47</span><span style="flex:1;text-align:right;color:#17C15B">6.54</span><span style="flex:1;text-align:right;color:#5C6674">—</span></div>
+      <div style="display:flex;font-size:15px;font-variant-numeric:tabular-nums;padding:5px 0"><span style="width:88px;color:#5C6674">ao5</span><span style="flex:1;text-align:right">11.03</span><span style="flex:1;text-align:right;color:#8A94A3">9.18</span><span style="flex:1;text-align:right;color:#5C6674">0.84</span></div>
+      <div style="display:flex;font-size:15px;font-variant-numeric:tabular-nums;padding:5px 0"><span style="width:88px;color:#5C6674">ao12</span><span style="flex:1;text-align:right">11.48</span><span style="flex:1;text-align:right;color:#8A94A3">10.02</span><span style="flex:1;text-align:right;color:#5C6674">1.12</span></div>
+      <div style="display:flex;font-size:15px;font-variant-numeric:tabular-nums;padding:5px 0"><span style="width:88px;color:#5C6674">ao100</span><span style="flex:1;text-align:right">11.92</span><span style="flex:1;text-align:right;color:#8A94A3">11.10</span><span style="flex:1;text-align:right;color:#5C6674">1.35</span></div>
+    </div>
+    <div style="flex:1.6;padding-left:30px">
+      <div style="font-size:10px;letter-spacing:.18em;color:#5C6674;padding-bottom:10px">RECENT — SESSION MAIN-3X3</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:34px;font-size:15px;font-variant-numeric:tabular-nums">
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#3E4756">047</span><span style="color:#EDF2F9">12.47</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#3E4756">044</span><span style="color:#8A94A3">10.53</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#3E4756">046</span><span style="color:#8A94A3">11.86</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#3E4756">043</span><span style="color:#D6303F">DNF</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#3E4756">045</span><span style="color:#8A94A3">16.02 <span style="color:#FF5800">+2</span></span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#3E4756">042</span><span style="color:#8A94A3">11.21</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "build out <a class="dv-oid" href="#1a">1a</a> with all six timer states" · "<a class="dv-oid" href="#1b">1b</a> but with the digits from <a class="dv-oid" href="#1c">1c</a>" · "show me mobile for <a class="dv-oid" href="#1b">1b</a>"</p>
+</section>
+
+</x-dc>
+</body>
+</html>
