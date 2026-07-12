@@ -10,8 +10,10 @@
   --text-primary: #e8e8ea;
   --text-scramble: #c9c9ce;
   --text-secondary: #9a9aa1;
-  --text-tertiary: #6b6b72;
-  --text-quiet: #55555c;
+  /* tertiary/quiet nudged up from the spec (#6B6B72 / #55555C) to clear
+     WCAG 4.5:1 on bg.base; hierarchy order preserved */
+  --text-tertiary: #84848c;
+  --text-quiet: #7e7e86;
   --text-index: #48484f;
   --accent-ready: #00c55b;
   --accent-best: #00a94f;
@@ -69,8 +71,9 @@
   --text-primary: #1a1a1c;
   --text-scramble: #333338;
   --text-secondary: #5a5a61;
-  --text-tertiary: #84848b;
-  --text-quiet: #9c9ca3;
+  /* nudged from spec (#84848B / #9C9CA3) for WCAG 4.5:1 on light bg.base */
+  --text-tertiary: #63636b;
+  --text-quiet: #6e6e76;
   --text-index: #aeaeb4;
   --accent-ready: #009b48;
   --accent-best: #008c41;

@@ -51,6 +51,7 @@ export function TwistyViewer({ scramble, alg }: TwistyViewerProps) {
     <div
       className="twisty-viewer"
       ref={containerRef}
+      role="img"
       aria-label="3D cube preview"
     />
   );
