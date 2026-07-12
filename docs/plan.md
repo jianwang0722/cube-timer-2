@@ -79,13 +79,13 @@ A phase is DONE only when all acceptance criteria pass and
 
 ## Phase 4 — UI polish
 
-- [ ] Implement the chosen visual design (reference: Claude Design mockups in `docs/design/`)
-- [ ] Layout: timer digits dominate; scramble above; stats and solve list in side/bottom panels
-- [ ] Dark theme default; light theme toggle; theme persisted
-- [ ] Focus mode: hide everything but the timer while running
-- [ ] Fully responsive: desktop, tablet, phone (touch timing already works from Phase 1)
-- [ ] Settings panel: inspection on/off, hold duration, 3D preview on/off, theme, sound
-- [ ] Accessibility pass: keyboard navigable settings, sufficient contrast, reduced-motion respect
+- [x] Implement the chosen visual design (reference: Claude Design mockups in `docs/design/`) — direction 2a Gridline
+- [x] Layout: timer digits dominate; scramble above; stats and solve list in side/bottom panels
+- [x] Dark theme default; light theme toggle; theme persisted
+- [x] Focus mode: hide everything but the timer while running — chrome recede per design (0.45/0.30/0.07)
+- [x] Fully responsive: desktop, tablet, phone (touch timing already works from Phase 1)
+- [x] Settings panel: inspection on/off, hold duration, 3D preview on/off, theme, sound
+- [x] Accessibility pass: keyboard navigable settings, sufficient contrast, reduced-motion respect (Lighthouse a11y 100)
       **Acceptance criteria**
 - Lighthouse accessibility ≥ 90
 - No layout shift when the timer starts/stops or a new scramble loads
