@@ -109,7 +109,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 | 5.2 cross | done |
 | 5.3 F2L | done |
 | 5.4 OLL | done |
-| 5.5 PLL | not started |
+| 5.5 PLL | done |
 | 5.6 pipeline/UI | not started |
 | 5.7 quality | not started |
 
@@ -119,6 +119,20 @@ how, but adds async plumbing we shouldn't pay for speculatively.
   (user decision). Rationale above.
 - **2026-07-11** — "Solved" is orientation-invariant in the harness.
 - **2026-07-11** — Main-thread solver until measurements demand a worker.
+- **2026-07-12** — Solutions start with `z2`: white cross solved on the bottom
+  (WCA scramble orientation is white-up/green-front; z2 keeps green on F).
+- **2026-07-12** — F2L case table is generated at init by BFS over verified
+  trigger gadgets (11 gadgets; tests prove net-preservation outside
+  U-layer + FR slot and full 150-state reachability).
+- **2026-07-12** — OLL/PLL recognition is generated from each alg's inverse
+  pattern; tiling proofs pin completeness (57 orbits + solved = 216
+  orientation patterns; 21 cases x pre/post-AUF orbits + solved = 288
+  permutation states). Consequence: a transcribed alg that still passes the
+  net-preservation and tiling checks can at worst carry a nonstandard case
+  LABEL — it cannot produce a wrong solution.
+- **2026-07-12** — Measured on the 500-scramble acceptance corpus: median
+  solve 0.07 ms, mean 68.4 STM (already in the 55-70 target band before the
+  5.7 quality pass).
 
 ## Open questions (decide in the stage that hits them)
 
