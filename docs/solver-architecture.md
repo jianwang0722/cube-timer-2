@@ -106,7 +106,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 |---|---|
 | 5.0 harness | done |
 | 5.1 cube model | done |
-| 5.2 cross | not started |
+| 5.2 cross | done |
 | 5.3 F2L | not started |
 | 5.4 OLL | not started |
 | 5.5 PLL | not started |

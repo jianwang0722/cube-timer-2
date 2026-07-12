@@ -102,7 +102,7 @@ A phase is DONE only when all acceptance criteria pass and
       solved-up-to-orientation; see docs/solver-architecture.md)
 - [x] **5.1 Cube model**: facelet/coordinate representation with move application
       (or reuse cubing.js's KPuzzle — prefer reuse; decide in plan mode)
-- [ ] **5.2 Cross solver**: IDA\*/BFS search for white cross (≤ 8 moves), on any
+- [x] **5.2 Cross solver**: IDA\*/BFS search for white cross (≤ 8 moves), on any
       of a chosen cross color; annotate the moves as "Cross"
 - [ ] **5.3 F2L**: detect the four corner/edge pairs, solve case-by-case using a
       standard F2L algorithm table; annotate each pair ("F2L pair 1..4")
