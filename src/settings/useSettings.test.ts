@@ -27,7 +27,9 @@ test("updates persist and re-apply on remount", () => {
 
 test("garbage or out-of-range stored values fall back to defaults", () => {
   localStorage.setItem(SETTINGS_KEY, "{nope");
-  expect(renderHook(() => useSettings()).result.current.settings).toEqual(DEFAULT_SETTINGS);
+  expect(renderHook(() => useSettings()).result.current.settings).toEqual(
+    DEFAULT_SETTINGS,
+  );
 
   localStorage.setItem(
     SETTINGS_KEY,

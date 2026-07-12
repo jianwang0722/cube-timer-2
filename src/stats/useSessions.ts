@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Penalty, SolveResult } from "../timer";
+import type { StatResult } from "./average";
 import {
   computePbFlags,
   computeStats,
@@ -28,6 +29,8 @@ export interface UseSessionsResult {
   currentSession: Session;
   stats: SessionStats;
   pbFlags: PbFlags;
+  /** Best single before the latest solve (for the PB delta line). */
+  prevBestSingle: StatResult;
   addSolve: (result: SolveResult, scramble: string) => void;
   setPenalty: (solveId: string, penalty: Penalty) => void;
   deleteSolve: (solveId: string) => void;
@@ -194,12 +197,17 @@ export function useSessions(
     () => computePbFlags(currentSession.solves),
     [currentSession.solves],
   );
+  const prevBestSingle = useMemo(
+    () => computeStats(currentSession.solves.slice(0, -1)).single.best,
+    [currentSession.solves],
+  );
 
   return {
     sessions: data.sessions,
     currentSession,
     stats,
     pbFlags,
+    prevBestSingle,
     addSolve,
     setPenalty,
     deleteSolve,

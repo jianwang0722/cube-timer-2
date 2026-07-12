@@ -23,15 +23,18 @@ function sanitize(value: unknown): Settings {
   const raw = value as Record<string, unknown>;
   return {
     theme: raw.theme === "light" ? "light" : "dark",
-    inspectionEnabled: typeof raw.inspectionEnabled === "boolean"
-      ? raw.inspectionEnabled
-      : DEFAULT_SETTINGS.inspectionEnabled,
+    inspectionEnabled:
+      typeof raw.inspectionEnabled === "boolean"
+        ? raw.inspectionEnabled
+        : DEFAULT_SETTINGS.inspectionEnabled,
     holdMs:
       typeof raw.holdMs === "number" && raw.holdMs >= 100 && raw.holdMs <= 2000
         ? raw.holdMs
         : DEFAULT_SETTINGS.holdMs,
     showPreview:
-      typeof raw.showPreview === "boolean" ? raw.showPreview : DEFAULT_SETTINGS.showPreview,
+      typeof raw.showPreview === "boolean"
+        ? raw.showPreview
+        : DEFAULT_SETTINGS.showPreview,
     inspectionSound:
       typeof raw.inspectionSound === "boolean"
         ? raw.inspectionSound

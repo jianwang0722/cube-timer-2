@@ -4,7 +4,13 @@ import { useTimer, type InspectionWarning } from "./useTimer";
 
 beforeEach(() => {
   vi.useFakeTimers({
-    toFake: ["setTimeout", "clearTimeout", "requestAnimationFrame", "cancelAnimationFrame", "performance"],
+    toFake: [
+      "setTimeout",
+      "clearTimeout",
+      "requestAnimationFrame",
+      "cancelAnimationFrame",
+      "performance",
+    ],
   });
 });
 
@@ -14,7 +20,9 @@ afterEach(() => {
 
 function key(type: "keydown" | "keyup", code = "Space") {
   act(() => {
-    window.dispatchEvent(new KeyboardEvent(type, { code, key: code === "Space" ? " " : code }));
+    window.dispatchEvent(
+      new KeyboardEvent(type, { code, key: code === "Space" ? " " : code }),
+    );
   });
 }
 

@@ -63,6 +63,12 @@ function advance(ms: number) {
   });
 }
 
+function enableInspection() {
+  fireEvent.click(screen.getByRole("button", { name: "settings" }));
+  fireEvent.click(screen.getByRole("checkbox", { name: "15s WCA inspection" }));
+  fireEvent.click(screen.getByRole("button", { name: "Close" }));
+}
+
 test("renders the idle timer shell", () => {
   render(<App />);
   expect(timer()).toHaveTextContent("0.00");
@@ -113,7 +119,7 @@ test("penalty controls edit and delete the last solve", () => {
   completeSolve(10000);
 
   fireEvent.click(screen.getByRole("button", { name: "+2" }));
-  expect(screen.getByRole("listitem")).toHaveTextContent("12.00+");
+  expect(screen.getByRole("listitem")).toHaveTextContent("12.00 +2");
 
   fireEvent.click(screen.getByRole("button", { name: "DNF" }));
   expect(screen.getByRole("listitem")).toHaveTextContent("DNF");
@@ -121,22 +127,25 @@ test("penalty controls edit and delete the last solve", () => {
   fireEvent.click(screen.getByRole("button", { name: "OK" }));
   expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
 
-  fireEvent.click(screen.getByRole("button", { name: "Delete solve" }));
+  fireEvent.click(within(screen.getByRole("listitem")).getByRole("button"));
+  fireEvent.click(screen.getByRole("button", { name: "Delete this solve" }));
   expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
 });
 
-test("space pressed while focused on an input does not arm the timer", () => {
+test("space inside the settings dialog does not arm the timer", () => {
   render(<App />);
-  const checkbox = screen.getByRole("checkbox", { name: "15s inspection" });
+  fireEvent.click(screen.getByRole("button", { name: "settings" }));
+  const checkbox = screen.getByRole("checkbox", { name: "15s WCA inspection" });
   checkbox.focus();
   fireEvent.keyDown(checkbox, { code: "Space", key: " " });
   expect(timer()).toHaveAttribute("data-status", "idle");
   fireEvent.keyUp(checkbox, { code: "Space", key: " " });
+  fireEvent.click(screen.getByRole("button", { name: "Close" }));
 });
 
 test("with inspection enabled, a tap starts the countdown and warnings change color", () => {
   render(<App />);
-  fireEvent.click(screen.getByRole("checkbox", { name: "15s inspection" }));
+  enableInspection();
 
   pressSpace();
   releaseSpace();
@@ -144,9 +153,9 @@ test("with inspection enabled, a tap starts the countdown and warnings change co
   expect(timer()).toHaveTextContent("15");
 
   advance(8000);
-  expect(timer()).toHaveClass("timer-display--warning8");
+  expect(timer()).toHaveClass("timer__digits--warn");
   advance(4000);
-  expect(timer()).toHaveClass("timer-display--warning12");
+  expect(timer()).toHaveClass("timer__digits--plus2");
 
   // Start 15.5s in: solve carries a +2.
   advance(3500 - HOLD_MS);
@@ -159,7 +168,7 @@ test("with inspection enabled, a tap starts the countdown and warnings change co
   advance(10000);
   fireEvent.keyDown(document.body, { code: "KeyJ", key: "j" });
   fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
-  expect(screen.getByRole("listitem")).toHaveTextContent("12.00+");
+  expect(screen.getByRole("listitem")).toHaveTextContent("12.00 +2");
 });
 
 test("shows the scramble and advances to the prefetched one after a solve", () => {
@@ -168,7 +177,9 @@ test("shows the scramble and advances to the prefetched one after a solve", () =
 
   completeSolve(5000);
   // The solve records the scramble it was performed on...
-  expect(screen.getByRole("listitem")).toHaveAttribute("title", "R U R' U'");
+  expect(
+    within(screen.getByRole("listitem")).getByRole("button"),
+  ).toHaveAttribute("title", "R U R' U'");
   // ...and the display moves to the next scramble.
   expect(screen.getByText("F B F' B'")).toBeInTheDocument();
 });
@@ -199,10 +210,11 @@ test("3D preview follows the scramble and can be hidden", () => {
     "R U R' U'",
   );
 
-  fireEvent.click(screen.getByRole("checkbox", { name: "3D preview" }));
+  const preview = screen.getByRole("region", { name: "Preview" });
+  fireEvent.click(within(preview).getByRole("button", { name: "collapse ▴" }));
   expect(screen.queryByTestId("twisty")).not.toBeInTheDocument();
 
-  fireEvent.click(screen.getByRole("checkbox", { name: "3D preview" }));
+  fireEvent.click(within(preview).getByRole("button", { name: "expand ▾" }));
   expect(screen.getByTestId("twisty")).toBeInTheDocument();
 });
 
@@ -235,26 +247,26 @@ test("a new PB single gets the highlight class", () => {
   completeSolve(12000);
   completeSolve(10000); // PB
   expect(document.querySelector('[data-stat="single-current"]')).toHaveClass(
-    "stats__value--pb",
+    "statband__value--pb",
   );
   completeSolve(15000); // not a PB
   expect(
     document.querySelector('[data-stat="single-current"]'),
-  ).not.toHaveClass("stats__value--pb");
+  ).not.toHaveClass("statband__value--pb");
 });
 
 test("sessions keep separate solves and switching works", () => {
   render(<App />);
   completeSolve(10000);
 
+  fireEvent.click(screen.getByRole("button", { name: /Session 1/ }));
   fireEvent.click(screen.getByRole("button", { name: "New" }));
   expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   completeSolve(20000);
   expect(screen.getByRole("listitem")).toHaveTextContent("20.00");
 
-  const select = screen.getByRole("combobox", { name: "Session" });
-  const first = (select as HTMLSelectElement).options[0].value;
-  fireEvent.change(select, { target: { value: first } });
+  fireEvent.click(screen.getByRole("button", { name: /Session 2/ }));
+  fireEvent.click(screen.getByRole("menuitemradio", { name: /Session 1/ }));
   expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
 });
 
@@ -297,4 +309,61 @@ test("deleting from the detail dialog removes the solve and closes", () => {
   );
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(screen.getAllByRole("listitem")).toHaveLength(1);
+});
+
+test("a PB solve shows the badge with delta against the previous best", () => {
+  render(<App />);
+  completeSolve(10000); // first solve: PB but no previous best
+  expect(screen.getByText("new personal best")).toBeInTheDocument();
+  expect(screen.queryByText(/was /)).not.toBeInTheDocument();
+
+  completeSolve(12000); // not a PB
+  expect(screen.queryByText("new personal best")).not.toBeInTheDocument();
+
+  completeSolve(8500); // PB, was 10.00, delta -1.50
+  expect(screen.getByText("new personal best")).toBeInTheDocument();
+  expect(screen.getByText("was 10.00 · −1.50")).toBeInTheDocument();
+});
+
+test("chrome recede phase follows the timer state", () => {
+  render(<App />);
+  const app = document.querySelector(".app")!;
+  expect(app).toHaveAttribute("data-phase", "idle");
+
+  pressSpace();
+  expect(app).toHaveAttribute("data-phase", "armed");
+  advance(HOLD_MS);
+  expect(app).toHaveAttribute("data-phase", "armed");
+  releaseSpace();
+  expect(app).toHaveAttribute("data-phase", "running");
+
+  fireEvent.keyDown(document.body, { code: "KeyJ", key: "j" });
+  fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
+  expect(app).toHaveAttribute("data-phase", "idle");
+});
+
+test("inspection phase recedes chrome and hold duration honors settings", () => {
+  render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "settings" }));
+  fireEvent.click(screen.getByRole("checkbox", { name: "15s WCA inspection" }));
+  fireEvent.change(screen.getByRole("combobox", { name: /Hold to arm/ }), {
+    target: { value: "500" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Close" }));
+
+  pressSpace();
+  releaseSpace();
+  expect(document.querySelector(".app")).toHaveAttribute(
+    "data-phase",
+    "inspection",
+  );
+
+  // 500ms hold now required: 400ms is not enough...
+  pressSpace();
+  advance(400);
+  expect(timer()).toHaveAttribute("data-status", "inspectionArmed");
+  advance(100);
+  expect(timer()).toHaveAttribute("data-status", "ready");
+  releaseSpace();
+  expect(timer()).toHaveAttribute("data-status", "running");
 });

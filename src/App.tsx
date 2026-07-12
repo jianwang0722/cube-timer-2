@@ -2,26 +2,55 @@ import { useEffect, useState } from "react";
 import {
   ProgressionChart,
   ScrambleDisplay,
-  SessionBar,
+  SettingsDialog,
   SolvePanel,
   StatsPanel,
   TimerDisplay,
+  TopBar,
   TwistyViewer,
 } from "./components";
 import { useScramble } from "./scramble";
+import { useSettings } from "./settings";
 import { useSessions } from "./stats";
-import { isEditableTarget, useTimer, type SolveResult } from "./timer";
+import { beep } from "./timer/beep";
+import {
+  isEditableTarget,
+  useTimer,
+  type SolveResult,
+  type TimerState,
+} from "./timer";
 import "./App.css";
 
+type Phase = "idle" | "armed" | "inspection" | "running";
+
+function phaseOf(state: TimerState): Phase {
+  switch (state.status) {
+    case "running":
+      return "running";
+    case "inspection":
+    case "inspectionArmed":
+      return "inspection";
+    case "ready":
+      return state.inspectionStartedAt !== undefined ? "inspection" : "armed";
+    case "armed":
+      return "armed";
+    default:
+      return "idle";
+  }
+}
+
 function App() {
-  const [inspectionEnabled, setInspectionEnabled] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
+  const { settings, update } = useSettings();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [chartOpen, setChartOpen] = useState(true);
   const { scramble, advance } = useScramble();
   const {
     sessions,
     currentSession,
     stats,
     pbFlags,
+    prevBestSingle,
     addSolve,
     setPenalty,
     deleteSolve,
@@ -39,16 +68,27 @@ function App() {
   };
 
   const { state, displayMs, inspectionElapsedMs, surfaceProps } = useTimer({
-    inspectionEnabled,
+    inspectionEnabled: settings.inspectionEnabled,
+    holdMs: settings.holdMs,
     onSolve,
+    onInspectionWarning: (kind) => {
+      if (settings.inspectionSound) beep(kind === "8s" ? 880 : 1175);
+    },
   });
 
-  // Hotkey N: new scramble, only between attempts (never mid-inspection/solve).
-  const canRescramble = state.status === "idle" || state.status === "stopped";
+  const lastSolve = currentSession.solves.at(-1);
+  const isPb = pbFlags.single;
+
+  // Hotkey N: new scramble, only between attempts and outside menus/dialogs.
+  const canRescramble =
+    (state.status === "idle" || state.status === "stopped") &&
+    !settingsOpen &&
+    !menuOpen;
   useEffect(() => {
     if (!canRescramble) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.repeat || isEditableTarget(e.target)) return;
+      if (document.querySelector("dialog[open]")) return;
       if (e.key === "n" || e.key === "N") advance();
     };
     window.addEventListener("keydown", onKeyDown);
@@ -56,54 +96,87 @@ function App() {
   }, [canRescramble, advance]);
 
   return (
-    <main>
-      <ScrambleDisplay scramble={scramble} onNew={advance} />
-      <div className="content">
-        <div className="timer-surface" {...surfaceProps}>
-          <TimerDisplay
-            state={state}
-            displayMs={displayMs}
-            inspectionElapsedMs={inspectionElapsedMs}
-          />
-        </div>
-        <aside className="side-panel">
-          <SessionBar
-            sessions={sessions}
-            currentSession={currentSession}
-            onSwitch={switchSession}
-            onCreate={createSession}
-            onRename={renameSession}
-            onDelete={deleteSession}
-            onExport={exportSession}
-            onImport={importSession}
-          />
-          <label>
-            <input
-              type="checkbox"
-              checked={inspectionEnabled}
-              onChange={(e) => setInspectionEnabled(e.target.checked)}
-            />
-            15s inspection
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={showPreview}
-              onChange={(e) => setShowPreview(e.target.checked)}
-            />
-            3D preview
-          </label>
-          {showPreview && <TwistyViewer scramble={scramble} />}
-          <StatsPanel stats={stats} pbFlags={pbFlags} />
-          <ProgressionChart solves={currentSession.solves} />
-          <SolvePanel
-            solves={currentSession.solves}
-            onSetPenalty={setPenalty}
-            onDelete={deleteSolve}
-          />
-        </aside>
+    <div className="app" data-phase={phaseOf(state)}>
+      <div className="app__topbar chrome">
+        <TopBar
+          sessions={sessions}
+          currentSession={currentSession}
+          onSwitch={switchSession}
+          onCreate={createSession}
+          onRename={renameSession}
+          onDelete={deleteSession}
+          onExport={exportSession}
+          onImport={importSession}
+          onOpenSettings={() => setSettingsOpen(true)}
+          onMenuOpenChange={setMenuOpen}
+        />
       </div>
-    </main>
+
+      <div className="app__scramble chrome">
+        <ScrambleDisplay
+          scramble={scramble}
+          onNew={advance}
+          solveIndex={currentSession.solves.length + 1}
+        />
+      </div>
+
+      <div className="app__timer" {...surfaceProps}>
+        <TimerDisplay
+          state={state}
+          displayMs={displayMs}
+          inspectionElapsedMs={inspectionElapsedMs}
+          lastSolve={lastSolve}
+          isPb={isPb}
+          prevBestSingle={prevBestSingle}
+          onSetPenalty={setPenalty}
+        />
+      </div>
+
+      <aside className="app__rail chrome">
+        <section className="rail-section" aria-label="Preview">
+          <div className="rail-section__header">
+            <span className="ui-label">preview</span>
+            <button
+              type="button"
+              onClick={() => update({ showPreview: !settings.showPreview })}
+            >
+              {settings.showPreview ? "collapse ▴" : "expand ▾"}
+            </button>
+          </div>
+          {settings.showPreview && <TwistyViewer scramble={scramble} />}
+        </section>
+
+        <SolvePanel
+          solves={currentSession.solves}
+          onSetPenalty={setPenalty}
+          onDelete={deleteSolve}
+        />
+
+        <section
+          className="rail-section rail-section--chart"
+          aria-label="Progression"
+        >
+          <div className="rail-section__header">
+            <span className="ui-label">progression</span>
+            <button type="button" onClick={() => setChartOpen((o) => !o)}>
+              {chartOpen ? "collapse ▴" : "expand ▾"}
+            </button>
+          </div>
+          {chartOpen && <ProgressionChart solves={currentSession.solves} />}
+        </section>
+      </aside>
+
+      <div className="app__stats chrome">
+        <StatsPanel stats={stats} pbFlags={pbFlags} />
+      </div>
+
+      <SettingsDialog
+        open={settingsOpen}
+        settings={settings}
+        onUpdate={update}
+        onClose={() => setSettingsOpen(false)}
+      />
+    </div>
   );
 }
 

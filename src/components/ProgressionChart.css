@@ -1,7 +1,9 @@
 .chart {
   margin: 0;
-  width: 16rem;
+  width: 100%;
   position: relative;
+  box-sizing: border-box;
+  padding: 0 var(--space-5) var(--space-4);
 }
 
 .chart__plot {
@@ -12,17 +14,18 @@
 
 .chart__empty {
   margin: 0;
-  font-size: 0.85rem;
-  opacity: 0.6;
+  font-size: 11px;
+  color: var(--text-quiet);
 }
 
 .chart__grid {
-  stroke: #2c2c2a;
+  stroke: var(--border-faint);
   stroke-width: 1;
 }
 
 .chart__tick {
-  fill: #898781;
+  fill: var(--text-index);
+  font-family: var(--font-digits);
   font-size: 8px;
   text-anchor: end;
   font-variant-numeric: tabular-nums;
@@ -30,41 +33,42 @@
 
 .chart__raw {
   fill: none;
-  stroke: #898781;
+  stroke: var(--text-quiet);
   stroke-width: 1.5;
   stroke-linejoin: round;
   stroke-linecap: round;
-  opacity: 0.55;
+  opacity: 0.65;
 }
 
 .chart__ao12 {
   fill: none;
-  stroke: #3987e5;
+  stroke: var(--accent-best);
   stroke-width: 2;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 
 .chart__crosshair {
-  stroke: #898781;
+  stroke: var(--text-quiet);
   stroke-width: 1;
   opacity: 0.6;
 }
 
 .chart__dot {
-  fill: #898781;
-  stroke: #16161d; /* surface ring */
+  fill: var(--text-secondary);
+  stroke: var(--bg-base); /* surface ring */
   stroke-width: 2;
 }
 
 .chart__tooltip {
   position: absolute;
   top: 0;
-  right: 0;
-  padding: 0.15rem 0.4rem;
-  font-size: 0.75rem;
-  background: #26262e;
-  border-radius: 0.25rem;
+  right: var(--space-5);
+  padding: 2px 8px;
+  font-family: var(--font-digits);
+  font-size: 11px;
+  background: var(--bg-control);
+  border-radius: var(--radius-1);
   pointer-events: none;
   font-variant-numeric: tabular-nums;
 }
@@ -72,10 +76,11 @@
 .chart__legend {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.75rem;
-  color: #898781;
-  margin-top: 0.25rem;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--text-quiet);
+  margin-top: var(--space-1);
 }
 
 .chart__key {
@@ -86,13 +91,13 @@
 }
 
 .chart__key--raw {
-  border-color: #898781;
-  margin-left: 0.35rem;
+  border-color: var(--text-quiet);
+  margin-left: var(--space-2);
 }
 
 .chart__key--ao12 {
-  border-color: #3987e5;
-  margin-left: 0.75rem;
+  border-color: var(--accent-best);
+  margin-left: var(--space-3);
 }
 
 .chart__key--raw:first-child {

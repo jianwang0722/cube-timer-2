@@ -1,23 +1,49 @@
-import type { TimerState } from "../timer";
-import { formatInspection, formatTimeMs } from "../timer";
+import type { StatResult } from "../stats";
+import { formatStat } from "../stats";
+import type { Penalty, Solve, TimerState } from "../timer";
+import { displayTime, formatInspection, formatTimeMs } from "../timer";
 import "./TimerDisplay.css";
 
 interface TimerDisplayProps {
   state: TimerState;
   displayMs: number;
   inspectionElapsedMs: number | null;
+  lastSolve: Solve | undefined;
+  /** The just-finished solve is a new PB single. */
+  isPb: boolean;
+  /** Best single before this solve, for the PB delta line. */
+  prevBestSingle: StatResult;
+  onSetPenalty: (id: string, penalty: Penalty) => void;
 }
 
-type Tone = "neutral" | "armed" | "ready" | "warning8" | "warning12";
+const PENALTIES: Penalty[] = ["OK", "+2", "DNF"];
+const STICKERS = ["white", "yellow", "green", "blue", "red", "orange"] as const;
 
-function tone(state: TimerState, inspectionElapsedMs: number | null): Tone {
+type Tone = "neutral" | "ready" | "warn" | "plus2" | "dnf" | "pb";
+
+function inspecting(state: TimerState): boolean {
+  return (
+    state.status === "inspection" ||
+    state.status === "inspectionArmed" ||
+    (state.status === "ready" && state.inspectionStartedAt !== undefined)
+  );
+}
+
+function tone(
+  state: TimerState,
+  elapsed: number | null,
+  lastSolve: Solve | undefined,
+  isPb: boolean,
+): Tone {
   if (state.status === "ready") return "ready";
-  if (state.status === "armed") return "armed";
-  if (state.status === "inspectionArmed") return "armed";
-  if (state.status === "inspection" && inspectionElapsedMs !== null) {
-    // Visual stand-ins for the WCA 8s/12s inspection warnings.
-    if (inspectionElapsedMs >= 12000) return "warning12";
-    if (inspectionElapsedMs >= 8000) return "warning8";
+  if (inspecting(state) && elapsed !== null) {
+    if (elapsed >= 12000) return "plus2";
+    if (elapsed >= 8000) return "warn";
+    return "neutral";
+  }
+  if (state.status === "stopped") {
+    if (isPb) return "pb";
+    if (lastSolve?.penalty === "DNF") return "dnf";
   }
   return "neutral";
 }
@@ -26,25 +52,104 @@ export function TimerDisplay({
   state,
   displayMs,
   inspectionElapsedMs,
+  lastSolve,
+  isPb,
+  prevBestSingle,
+  onSetPenalty,
 }: TimerDisplayProps) {
-  const inspecting =
-    state.status === "inspection" ||
-    state.status === "inspectionArmed" ||
-    (state.status === "ready" && state.inspectionStartedAt !== undefined);
+  const isInspecting = inspecting(state);
+  const showPb = state.status === "stopped" && isPb && lastSolve !== undefined;
 
   const text =
-    inspecting && inspectionElapsedMs !== null
+    isInspecting && inspectionElapsedMs !== null
       ? formatInspection(inspectionElapsedMs)
-      : formatTimeMs(displayMs);
+      : state.status === "stopped" && lastSolve
+        ? displayTime(lastSolve)
+        : formatTimeMs(displayMs);
+
+  const currentTone = tone(state, inspectionElapsedMs, lastSolve, isPb);
+  const elapsedSec =
+    inspectionElapsedMs === null ? 0 : Math.floor(inspectionElapsedMs / 1000);
+
+  const delta =
+    showPb && typeof prevBestSingle === "number" && lastSolve
+      ? lastSolve.timeMs - prevBestSingle
+      : null;
 
   return (
-    <div
-      className={`timer-display timer-display--${tone(state, inspectionElapsedMs)}`}
-      data-status={state.status}
-      role="timer"
-      aria-live="off"
-    >
-      {text}
+    <div className="timer" data-inspecting={isInspecting || undefined}>
+      <div className="timer__label-slot">
+        {isInspecting && (
+          <span className="timer__inspection-label">inspection</span>
+        )}
+        {showPb && (
+          <span className="timer__pb-row">
+            <span className="timer__pb-badge">new personal best</span>
+            {typeof prevBestSingle === "number" && delta !== null && (
+              <span className="timer__pb-delta">
+                was {formatStat(prevBestSingle)} · −
+                {formatTimeMs(Math.abs(delta))}
+              </span>
+            )}
+          </span>
+        )}
+      </div>
+
+      <div
+        className={`timer__digits timer__digits--${currentTone}`}
+        data-status={state.status}
+        role="timer"
+        aria-live="off"
+      >
+        {showPb && <span className="timer__glow" aria-hidden="true" />}
+        {text}
+      </div>
+
+      <div className="timer__strip-slot" aria-hidden="true">
+        {isInspecting && (
+          <span className="timer__inspection-strip">
+            {Array.from({ length: 15 }, (_, i) => (
+              <i
+                key={i}
+                className="timer__segment"
+                data-zone={i >= 12 ? "plus2" : i >= 8 ? "warn" : "base"}
+                data-consumed={i < elapsedSec || undefined}
+              />
+            ))}
+          </span>
+        )}
+        {showPb && (
+          <span className="timer__wca-strip">
+            {STICKERS.map((c) => (
+              <i key={c} className="timer__segment" data-sticker={c} />
+            ))}
+          </span>
+        )}
+      </div>
+
+      <div className="timer__hint-slot">
+        {state.status === "idle" || state.status === "armed" ? (
+          <span className="timer__hint">hold space</span>
+        ) : state.status === "ready" ? (
+          <span className="timer__hint timer__hint--ready">
+            release to start
+          </span>
+        ) : state.status === "stopped" && lastSolve ? (
+          <div className="timer__penalties">
+            {PENALTIES.map((p) => (
+              <button
+                key={p}
+                type="button"
+                className={`timer__penalty timer__penalty--${p === "+2" ? "plus2" : p.toLowerCase()}`}
+                aria-pressed={lastSolve.penalty === p}
+                onClick={() => onSetPenalty(lastSolve.id, p)}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

@@ -83,6 +83,8 @@ export function useTimer({
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.repeat || isEditableTarget(e.target)) return;
+      // Keyboard belongs to any open dialog (settings, solve detail).
+      if (document.querySelector("dialog[open]")) return;
       if (e.key === "Escape") {
         sendEvent({ type: "CANCEL" });
         return;
@@ -96,6 +98,7 @@ export function useTimer({
 
     const onKeyUp = (e: KeyboardEvent) => {
       if (isEditableTarget(e.target)) return;
+      if (document.querySelector("dialog[open]")) return;
       // Space releases; after a stop, releasing whichever key stopped the
       // timer clears the re-arm guard.
       if (e.code === "Space" || stateRef.current.status === "stopped") {
@@ -145,7 +148,9 @@ export function useTimer({
     for (const [kind, at] of thresholds) {
       const delay = warningAnchor + at - performance.now();
       if (delay > 0) {
-        timers.push(setTimeout(() => onInspectionWarningRef.current?.(kind), delay));
+        timers.push(
+          setTimeout(() => onInspectionWarningRef.current?.(kind), delay),
+        );
       }
     }
     return () => timers.forEach(clearTimeout);

@@ -1,6 +1,8 @@
 .twisty-viewer {
-  width: 16rem;
-  height: 12rem;
+  width: 100%;
+  height: 190px;
+  box-sizing: border-box;
+  padding: 0 var(--space-4) var(--space-3);
 }
 
 .twisty-viewer twisty-player {

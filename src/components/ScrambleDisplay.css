@@ -1,25 +1,53 @@
 .scramble {
+  height: var(--scramble-h);
+  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: 0 var(--space-6);
 }
 
 .scramble__text {
   margin: 0;
-  min-height: 2.4em;
-  max-width: 60rem;
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-notation);
+  font-size: clamp(15px, 1.6vw, 21px);
+  letter-spacing: 0.04em;
+  color: var(--text-scramble);
+  overflow-wrap: normal; /* break only between moves (spaces) */
 }
 
 .scramble__text[data-loading="true"] {
-  opacity: 0.5;
+  color: var(--text-quiet);
+}
+
+.scramble__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.scramble__meta {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-quiet);
+  font-variant-numeric: tabular-nums;
 }
 
 .scramble__actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-1);
+}
+
+.scramble__actions button {
+  color: var(--text-quiet);
+  padding: 2px 8px;
+}
+
+.scramble__actions button:hover:not(:disabled) {
+  color: var(--text-primary);
 }

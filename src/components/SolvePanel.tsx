@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Penalty, Solve } from "../timer";
-import { displayTime } from "../timer";
+import { displayTime, formatTimeMs } from "../timer";
 import "./SolvePanel.css";
 
 interface SolvePanelProps {
@@ -12,38 +12,15 @@ interface SolvePanelProps {
 const PENALTIES: Penalty[] = ["OK", "+2", "DNF"];
 const LIST_LIMIT = 100;
 
-function PenaltyButtons({
-  solve,
-  onSetPenalty,
-  onDelete,
-  deleteLabel,
-}: {
-  solve: Solve;
-  onSetPenalty: SolvePanelProps["onSetPenalty"];
-  onDelete: SolvePanelProps["onDelete"];
-  deleteLabel: string;
-}) {
-  return (
-    <div className="solve-panel__controls">
-      {PENALTIES.map((p) => (
-        <button
-          key={p}
-          type="button"
-          onClick={() => onSetPenalty(solve.id, p)}
-          aria-pressed={solve.penalty === p}
-        >
-          {p}
-        </button>
-      ))}
-      <button
-        type="button"
-        aria-label={deleteLabel}
-        onClick={() => onDelete(solve.id)}
-      >
-        Delete
-      </button>
-    </div>
-  );
+function rowTime(solve: Solve): {
+  text: string;
+  tag: "+2" | null;
+  dnf: boolean;
+} {
+  if (solve.penalty === "DNF") return { text: "DNF", tag: null, dnf: true };
+  if (solve.penalty === "+2")
+    return { text: formatTimeMs(solve.timeMs + 2000), tag: "+2", dnf: false };
+  return { text: formatTimeMs(solve.timeMs), tag: null, dnf: false };
 }
 
 export function SolvePanel({
@@ -52,37 +29,43 @@ export function SolvePanel({
   onDelete,
 }: SolvePanelProps) {
   const [detailId, setDetailId] = useState<string | null>(null);
-  const last = solves.at(-1);
   const detail = solves.find((s) => s.id === detailId);
   const shown = solves.slice(-LIST_LIMIT).reverse();
+  const lastId = solves.at(-1)?.id;
 
   return (
     <section className="solve-panel" aria-label="Solves">
-      {last && (
-        <PenaltyButtons
-          solve={last}
-          onSetPenalty={onSetPenalty}
-          onDelete={onDelete}
-          deleteLabel="Delete solve"
-        />
-      )}
+      <div className="solve-panel__header">
+        <span className="ui-label">session</span>
+        <span className="solve-panel__count">{solves.length}</span>
+      </div>
       <ol className="solve-panel__list" reversed start={solves.length}>
-        {shown.map((solve) => (
-          <li key={solve.id} title={solve.scramble}>
-            <button
-              type="button"
-              className="solve-panel__item"
-              onClick={() => setDetailId(solve.id)}
-            >
-              {displayTime(solve)}
-            </button>
-          </li>
-        ))}
+        {shown.map((solve, i) => {
+          const { text, tag, dnf } = rowTime(solve);
+          const index = solves.length - i;
+          return (
+            <li key={solve.id}>
+              <button
+                type="button"
+                className="solve-panel__row"
+                data-latest={solve.id === lastId || undefined}
+                title={solve.scramble}
+                onClick={() => setDetailId(solve.id)}
+              >
+                <span className="solve-panel__index">{index}</span>
+                <span
+                  className={`solve-panel__time${dnf ? " solve-panel__time--dnf" : ""}`}
+                >
+                  {text}
+                  {tag && <span className="solve-panel__plus2"> +2</span>}
+                </span>
+              </button>
+            </li>
+          );
+        })}
       </ol>
       {solves.length > LIST_LIMIT && (
-        <p className="solve-panel__note">
-          Showing last {LIST_LIMIT} of {solves.length} solves
-        </p>
+        <p className="solve-panel__note">showing last {LIST_LIMIT}</p>
       )}
       {detail && (
         <dialog open className="solve-detail" aria-label="Solve detail">
@@ -93,16 +76,33 @@ export function SolvePanel({
           <p className="solve-detail__date">
             {new Date(detail.date).toLocaleString()}
           </p>
-          <PenaltyButtons
-            solve={detail}
-            onSetPenalty={onSetPenalty}
-            onDelete={(id) => {
-              onDelete(id);
-              setDetailId(null);
-            }}
-            deleteLabel="Delete this solve"
-          />
-          <button type="button" onClick={() => setDetailId(null)}>
+          <div className="solve-detail__controls">
+            {PENALTIES.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => onSetPenalty(detail.id, p)}
+                aria-pressed={detail.penalty === p}
+              >
+                {p}
+              </button>
+            ))}
+            <button
+              type="button"
+              aria-label="Delete this solve"
+              onClick={() => {
+                onDelete(detail.id);
+                setDetailId(null);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+          <button
+            type="button"
+            className="solve-detail__close"
+            onClick={() => setDetailId(null)}
+          >
             Close
           </button>
         </dialog>
