@@ -100,7 +100,7 @@ A phase is DONE only when all acceptance criteria pass and
       model and assert the solved state. Runs in unit tests and as a runtime
       guard before any solution is shown to the user. (KPuzzle referee;
       solved-up-to-orientation; see docs/solver-architecture.md)
-- [ ] **5.1 Cube model**: facelet/coordinate representation with move application
+- [x] **5.1 Cube model**: facelet/coordinate representation with move application
       (or reuse cubing.js's KPuzzle — prefer reuse; decide in plan mode)
 - [ ] **5.2 Cross solver**: IDA\*/BFS search for white cross (≤ 8 moves), on any
       of a chosen cross color; annotate the moves as "Cross"

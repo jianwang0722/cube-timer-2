@@ -105,7 +105,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 | Stage | State |
 |---|---|
 | 5.0 harness | done |
-| 5.1 cube model | in progress — model written, KPuzzle validation tests pending (see docs/wip-solver-core.md) |
+| 5.1 cube model | done |
 | 5.2 cross | not started |
 | 5.3 F2L | not started |
 | 5.4 OLL | not started |

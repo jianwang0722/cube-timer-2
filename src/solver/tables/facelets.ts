@@ -37,7 +37,7 @@ export const EDGE_FACELETS: Record<string, readonly [number, number]> = {
   DL: [30, 43],
   DB: [34, 52],
   FR: [23, 12],
-  FL: [21, 39],
-  BL: [50, 41],
+  FL: [21, 41],
+  BL: [50, 39],
   BR: [48, 14],
 };
