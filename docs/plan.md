@@ -96,9 +96,10 @@ A phase is DONE only when all acceptance criteria pass and
 
 > Build the verification harness FIRST. No solver code merges without it.
 
-- [ ] **5.0 Verification harness**: apply `scramble + candidateSolution` to a cube
+- [x] **5.0 Verification harness**: apply `scramble + candidateSolution` to a cube
       model and assert the solved state. Runs in unit tests and as a runtime
-      guard before any solution is shown to the user.
+      guard before any solution is shown to the user. (KPuzzle referee;
+      solved-up-to-orientation; see docs/solver-architecture.md)
 - [ ] **5.1 Cube model**: facelet/coordinate representation with move application
       (or reuse cubing.js's KPuzzle — prefer reuse; decide in plan mode)
 - [ ] **5.2 Cross solver**: IDA\*/BFS search for white cross (≤ 8 moves), on any

@@ -104,7 +104,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 
 | Stage | State |
 |---|---|
-| 5.0 harness | in progress (this phase) |
+| 5.0 harness | done |
 | 5.1 cube model | not started |
 | 5.2 cross | not started |
 | 5.3 F2L | not started |
