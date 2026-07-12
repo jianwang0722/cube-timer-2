@@ -14,9 +14,15 @@ export interface SolveResult {
   penalty: Penalty;
 }
 
+export type InspectionWarning = "8s" | "12s";
+
 export interface UseTimerOptions {
   inspectionEnabled: boolean;
   onSolve: (result: SolveResult) => void;
+  /** Hold duration before the timer arms; defaults to the WCA-ish 300ms. */
+  holdMs?: number;
+  /** Fired once per inspection when 8s / 12s of inspection elapse. */
+  onInspectionWarning?: (kind: InspectionWarning) => void;
 }
 
 export interface TimerSurfaceProps {
@@ -52,6 +58,8 @@ function reduce(
 export function useTimer({
   inspectionEnabled,
   onSolve,
+  holdMs = HOLD_MS,
+  onInspectionWarning,
 }: UseTimerOptions): UseTimerResult {
   const [state, dispatch] = useReducer(reduce, initialState);
 
@@ -62,6 +70,8 @@ export function useTimer({
   configRef.current = { inspectionEnabled };
   const onSolveRef = useRef(onSolve);
   onSolveRef.current = onSolve;
+  const onInspectionWarningRef = useRef(onInspectionWarning);
+  onInspectionWarningRef.current = onInspectionWarning;
 
   const send = (event: TimerEvent) =>
     dispatch({ event, config: configRef.current });
@@ -113,9 +123,33 @@ export function useTimer({
         event: { type: "HOLD_REACHED", now: performance.now() },
         config: configRef.current,
       });
-    }, HOLD_MS);
+    }, holdMs);
     return () => clearTimeout(timeout);
-  }, [holdSince]);
+  }, [holdSince, holdMs]);
+
+  // 8s/12s inspection warnings, each fired once per inspection (keyed on the
+  // inspection start timestamp, which survives arm/release within it).
+  const warningAnchor =
+    state.status === "inspection" || state.status === "inspectionArmed"
+      ? state.startedAt
+      : state.status === "ready"
+        ? (state.inspectionStartedAt ?? null)
+        : null;
+  useEffect(() => {
+    if (warningAnchor === null) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const thresholds: [InspectionWarning, number][] = [
+      ["8s", 8000],
+      ["12s", 12000],
+    ];
+    for (const [kind, at] of thresholds) {
+      const delay = warningAnchor + at - performance.now();
+      if (delay > 0) {
+        timers.push(setTimeout(() => onInspectionWarningRef.current?.(kind), delay));
+      }
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [warningAnchor]);
 
   // Report each finished solve exactly once, on the running -> stopped edge
   // (later stopped-state updates like clearing awaitingRelease must not refire).
