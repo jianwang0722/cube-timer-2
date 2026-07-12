@@ -104,7 +104,7 @@ A phase is DONE only when all acceptance criteria pass and
       (or reuse cubing.js's KPuzzle — prefer reuse; decide in plan mode)
 - [x] **5.2 Cross solver**: IDA\*/BFS search for white cross (≤ 8 moves), on any
       of a chosen cross color; annotate the moves as "Cross"
-- [ ] **5.3 F2L**: detect the four corner/edge pairs, solve case-by-case using a
+- [x] **5.3 F2L**: detect the four corner/edge pairs, solve case-by-case using a
       standard F2L algorithm table; annotate each pair ("F2L pair 1..4")
 - [ ] **5.4 OLL**: recognize the 57 OLL cases from the last-layer pattern; apply
       the standard algorithm; handle AUF (U-face pre-rotation) in recognition
