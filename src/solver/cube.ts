@@ -176,6 +176,53 @@ export function faceletsFromMoves(moves: string | readonly string[]): Facelets {
   return applyMoves(SOLVED, moves);
 }
 
+export function invertMoves(moves: string | readonly string[]): string[] {
+  const list = typeof moves === "string" ? parseMoves(moves) : [...moves];
+  return list
+    .reverse()
+    .map((m) => (m.endsWith("'") ? m.slice(0, -1) : m.endsWith("2") ? m : `${m}'`));
+}
+
+/** Net destination map of a move sequence: to[src] = dst. */
+export function netToMap(moves: string | readonly string[]): Uint8Array {
+  const list = typeof moves === "string" ? parseMoves(moves) : moves;
+  let perm: Perm | null = null;
+  for (const move of list) {
+    const p = permFor(move);
+    if (perm === null) {
+      perm = Uint8Array.from(p);
+    } else {
+      const next = new Uint8Array(54);
+      for (let i = 0; i < 54; i++) next[i] = perm[p[i]];
+      perm = next;
+    }
+  }
+  const to = new Uint8Array(54);
+  for (let dst = 0; dst < 54; dst++) to[perm ? perm[dst] : dst] = dst;
+  return to;
+}
+
+/** True when the sequence's net effect fixes every facelet outside `mutable`. */
+export function netPreservesOutside(
+  moves: string | readonly string[],
+  mutable: ReadonlySet<number>,
+): boolean {
+  const to = netToMap(moves);
+  for (let p = 0; p < 54; p++) {
+    if (!mutable.has(p) && to[p] !== p) return false;
+  }
+  return true;
+}
+
+/** Facelet positions of the U layer (U face + the four top side rows). */
+export const U_LAYER_POSITIONS: ReadonlySet<number> = new Set([
+  ...Array.from({ length: 9 }, (_, i) => i),
+  9, 10, 11,
+  18, 19, 20,
+  36, 37, 38,
+  45, 46, 47,
+]);
+
 // --- Stage invariants (center-relative, so rotations never confuse them) ---
 
 const SIDE_FACES = [FACE.R, FACE.F, FACE.L, FACE.B] as const;

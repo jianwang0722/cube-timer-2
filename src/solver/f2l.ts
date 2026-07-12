@@ -10,12 +10,14 @@
  */
 import {
   applyMoves,
+  invertMoves,
   isF2LPairSolved,
+  netPreservesOutside,
+  netToMap,
   parseMoves,
-  permFor,
   type F2LSlot,
   type Facelets,
-  type Perm,
+  U_LAYER_POSITIONS,
 } from "./cube";
 import { CORNER_FACELETS, EDGE_FACELETS, FACE } from "./tables/facelets";
 
@@ -44,11 +46,7 @@ const SOLVED_STATE = encodeState(CORNER_SLOTS.indexOf("DFR"), 0, EDGE_SLOTS.inde
 
 // Facelet positions allowed to change under a gadget: U layer + FR slot.
 const MUTABLE = new Set<number>([
-  ...Array.from({ length: 9 }, (_, i) => i), // U face
-  9, 10, 11, // R top row
-  18, 19, 20, // F top row
-  36, 37, 38, // L top row
-  45, 46, 47, // B top row
+  ...U_LAYER_POSITIONS,
   ...CORNER_FACELETS.DFR,
   ...EDGE_FACELETS.FR,
 ]);
@@ -57,30 +55,9 @@ function encodeState(ci: number, co: number, ei: number, ef: number): number {
   return (ci * 3 + co) * (EDGE_SLOTS.length * 2) + (ei * 2 + ef);
 }
 
-function composedToMap(moves: string): Uint8Array {
-  let perm: Perm | null = null;
-  for (const move of parseMoves(moves)) {
-    const p = permFor(move);
-    if (perm === null) {
-      perm = Uint8Array.from(p);
-    } else {
-      const next = new Uint8Array(54);
-      for (let i = 0; i < 54; i++) next[i] = perm[p[i]];
-      perm = next;
-    }
-  }
-  const to = new Uint8Array(54);
-  for (let dst = 0; dst < 54; dst++) to[perm ? perm[dst] : dst] = dst;
-  return to;
-}
-
 /** A gadget's net effect must fix every facelet outside U layer + FR slot. */
 export function gadgetPreserves(gadget: string): boolean {
-  const to = composedToMap(gadget);
-  for (let p = 0; p < 54; p++) {
-    if (!MUTABLE.has(p) && to[p] !== p) return false;
-  }
-  return true;
+  return netPreservesOutside(gadget, MUTABLE);
 }
 
 /** Where a corner at (slotName, ori) lands under a move sequence. */
@@ -123,11 +100,7 @@ function buildTables(): F2LTables {
     if (!gadgetPreserves(gadget)) {
       throw new Error(`F2L gadget violates preservation: ${gadget}`);
     }
-    const inverse = parseMoves(gadget)
-      .reverse()
-      .map((m) => (m.endsWith("'") ? m.slice(0, -1) : m.endsWith("2") ? m : `${m}'`))
-      .join(" ");
-    const to = composedToMap(inverse);
+    const to = netToMap(invertMoves(gadget));
 
     const cMap = new Array<number>(CORNER_SLOTS.length * 3).fill(-1);
     for (let ci = 0; ci < CORNER_SLOTS.length; ci++) {

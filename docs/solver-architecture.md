@@ -108,7 +108,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 | 5.1 cube model | done |
 | 5.2 cross | done |
 | 5.3 F2L | done |
-| 5.4 OLL | not started |
+| 5.4 OLL | done |
 | 5.5 PLL | not started |
 | 5.6 pipeline/UI | not started |
 | 5.7 quality | not started |

@@ -1,0 +1,71 @@
+/**
+ * The 57 OLL algorithms (standard speedsolving set), expressed in this
+ * solver's move vocabulary: outer turns + x/y/z rotations. Wide moves are
+ * rewritten mechanically (r = "x L", r' = "L' x'", r2 = "x2 L2", f = "z B",
+ * f' = "B' z'", M = "x' L' R", M' = "x L R'").
+ *
+ * Correctness is machine-enforced (oll.test.ts): every alg must net-preserve
+ * the cube outside the U layer, and the 57 alg-inverse patterns plus the
+ * solved pattern must tile all 216 last-layer orientation patterns exactly.
+ * A transcription slip can therefore mislabel a case number at worst — it
+ * cannot produce a wrong solution.
+ */
+export const OLL_ALGS: Record<number, string> = {
+  1: "R U2 R2 F R F' U2 R' F R F'",
+  2: "F R U R' U' F' z B R U R' U' B' z'",
+  3: "z B R U R' U' B' z' U' F R U R' U' F'",
+  4: "z B R U R' U' B' z' U F R U R' U' F'",
+  5: "L' x' U2 R U R' U x L",
+  6: "x L U2 R' U' R U' L' x'",
+  7: "x L U R' U R U2 L' x'",
+  8: "L' x' U' R U' R' U2 x L",
+  9: "R U R' U' R' F R2 U R' U' F'",
+  10: "R U R' U R' F R F' R U2 R'",
+  11: "x L U R' U R' F R F' R U2 L' x'",
+  12: "F R U R' U' F' U F R U R' U' F'",
+  13: "F U R U' R2 F' R U R U' R'",
+  14: "R' F R U R' F' R F U' F'",
+  15: "L' x' U' x L R' U' R U L' x' U x L",
+  16: "x L U x' L' R U R' U' x L U' L' x'",
+  17: "R U R' U R' F R F' U2 R' F R F'",
+  18: "F R U R' U y' R' U2 R' F R F' y",
+  19: "x' L' R U R U R' U' x L R' R' F R F'",
+  20: "x L U R' U' x2 L2 R2 U R U' R' U' x L R'",
+  21: "R U2 R' U' R U R' U' R U' R'",
+  22: "R U2 R2 U' R2 U' R2 U2 R",
+  23: "R2 D' R U2 R' D R U2 R",
+  24: "x L U R' U' L' x' F R F'",
+  25: "F' x L U R' U' L' x' F R",
+  26: "R U2 R' U' R U' R'",
+  27: "R U R' U R U2 R'",
+  28: "x L U R' U' L' x' R U R U' R'",
+  29: "R U R' U' R U' R' F' U' F R U R'",
+  30: "F U R U2 R' U' R U2 R' U' F'",
+  31: "R' U' F U R U' R' F' R",
+  32: "R U B' U' R' U R B R'",
+  33: "R U R' U' R' F R F'",
+  34: "R U R2 U' R' F R U R U' F'",
+  35: "R U2 R2 F R F' R U2 R'",
+  36: "L' U' L U' L' U L U L F' L' F",
+  37: "F R' F' R U R U' R'",
+  38: "R U R' U R U' R' U' R' F R F'",
+  39: "L F' L' U' L U F U' L'",
+  40: "R' F R U R' U' F' U R",
+  41: "R U R' U R U2 R' F R U R' U' F'",
+  42: "R' U' R U' R' U2 R F R U R' U' F'",
+  43: "F' U' L' U L F",
+  44: "F U R U' R' F'",
+  45: "F R U R' U' F'",
+  46: "R' U' R' F R F' U R",
+  47: "F' L' U' L U L' U' L U F",
+  48: "F R U R' U' R U R' U' F'",
+  49: "x L U' x2 L2 U x2 L2 U x2 L2 U' x L",
+  50: "L' x' U x2 L2 U' x2 L2 U' x2 L2 U L' x'",
+  51: "F U R U' R' U R U' R' F'",
+  52: "R U R' U R U' B U' B' R'",
+  53: "L' x' U' R U' R' U R U' R' U2 x L",
+  54: "x L U R' U R U' R' U R U2 L' x'",
+  55: "R U2 R2 U' R U' R' U2 F R F'",
+  56: "x L U L' x' U R U' R' U R U' R' x L U' L' x'",
+  57: "R U R' U' x L R' U R U' L' x'",
+};
