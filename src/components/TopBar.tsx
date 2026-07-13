@@ -82,7 +82,7 @@ export function TopBar({
 
   return (
     <header className="topbar">
-      <span className="topbar__wordmark">cubetimer</span>
+      <span className="topbar__wordmark">SpeedCubeTimer</span>
       <div className="topbar__actions">
         <div className="session-menu" ref={menuRef}>
           <button

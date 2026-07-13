@@ -1,4 +1,4 @@
-# cube-timer
+# SpeedCubeTimer
 
 A lightweight, modern timer app for speedcubing.
 

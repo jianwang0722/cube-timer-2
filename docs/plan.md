@@ -1,4 +1,4 @@
-# CubeTimer — Implementation Plan
+# SpeedCubeTimer — Implementation Plan
 
 Phased build plan for the speedcubing timer. Work one phase at a time.
 Start each phase in **plan mode**, review the proposed approach against this document and CLAUDE.md, then execute. Check off items as they're completed.

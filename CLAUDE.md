@@ -1,4 +1,4 @@
-# CubeTimer — Speedcubing Timer
+# SpeedCubeTimer — Speedcubing Timer
 
 React + TypeScript + Vite speedcubing timer with WCA-compliant
 3x3 scrambles, 3D cube preview, and session statistics.
