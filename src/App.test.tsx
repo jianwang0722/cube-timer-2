@@ -367,3 +367,91 @@ test("inspection phase recedes chrome and hold duration honors settings", () => 
   releaseSpace();
   expect(timer()).toHaveAttribute("data-status", "running");
 });
+
+function startInspection() {
+  enableInspection();
+  pressSpace();
+  releaseSpace();
+  expect(timer()).toHaveAttribute("data-status", "inspection");
+}
+
+function inspectionSolve(durationMs: number) {
+  pressSpace();
+  releaseSpace(); // tap starts inspection
+  advance(2000);
+  pressSpace();
+  advance(HOLD_MS);
+  releaseSpace(); // hold -> ready -> running
+  advance(durationMs);
+  fireEvent.keyDown(document.body, { code: "KeyJ", key: "j" });
+  fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
+}
+
+test("clicking +2/DNF after an inspection solve does not restart inspection", () => {
+  render(<App />);
+  enableInspection();
+  inspectionSolve(10000);
+  expect(timer()).toHaveAttribute("data-status", "stopped");
+
+  // Pointer interaction on the penalty pill (the real repro — jsdom click
+  // alone never fired pointer events, which is why the bug slipped through).
+  const plus2 = screen.getByRole("button", { name: "+2" });
+  fireEvent.pointerDown(plus2, { isPrimary: true });
+  fireEvent.pointerUp(plus2, { isPrimary: true });
+  fireEvent.click(plus2);
+
+  expect(timer()).toHaveAttribute("data-status", "stopped");
+  expect(screen.getByRole("listitem")).toHaveTextContent("12.00 +2");
+});
+
+test("inspection can be cancelled with the cancel button (misclick escape)", () => {
+  render(<App />);
+  startInspection();
+
+  fireEvent.click(screen.getByRole("button", { name: "cancel" }));
+  expect(timer()).toHaveAttribute("data-status", "idle");
+});
+
+test("Escape also cancels a running inspection", () => {
+  render(<App />);
+  startInspection();
+  fireEvent.keyDown(document.body, { code: "Escape", key: "Escape" });
+  expect(timer()).toHaveAttribute("data-status", "idle");
+});
+
+test("the running timer shows a single decimal; stopped shows centiseconds", () => {
+  render(<App />);
+  pressSpace();
+  advance(HOLD_MS);
+  releaseSpace();
+  advance(1234);
+  expect(timer()).toHaveAttribute("data-status", "running");
+  expect(timer().textContent).toBe("1.2");
+
+  fireEvent.keyDown(document.body, { code: "KeyJ", key: "j" });
+  fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
+  expect(timer().textContent).toBe("1.23");
+});
+
+test("the topbar inspection chip toggles inspection in one click", () => {
+  render(<App />);
+  const chip = () => screen.getByRole("button", { name: /^inspection/ });
+  expect(chip()).toHaveAccessibleName("inspection off");
+  expect(chip()).toHaveAttribute("aria-pressed", "false");
+
+  // One click flips inspection on — no dialog is opened.
+  fireEvent.click(chip());
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(chip()).toHaveAccessibleName("inspection 15s");
+  expect(chip()).toHaveAttribute("aria-pressed", "true");
+
+  // ...and it now governs the timer: a quick tap starts the countdown.
+  pressSpace();
+  releaseSpace();
+  expect(timer()).toHaveAttribute("data-status", "inspection");
+
+  // Cancel out, then a second click flips it back off.
+  fireEvent.keyDown(document.body, { code: "Escape", key: "Escape" });
+  fireEvent.click(chip());
+  expect(chip()).toHaveAccessibleName("inspection off");
+});

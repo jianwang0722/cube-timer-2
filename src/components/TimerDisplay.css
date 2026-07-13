@@ -184,3 +184,22 @@
 .timer__penalty[aria-pressed="true"] {
   outline: 1px solid var(--text-tertiary);
 }
+
+.timer__cancel-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.timer__cancel {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-control);
+  color: var(--text-secondary);
+}
+
+.timer__cancel:hover {
+  color: var(--text-primary);
+}

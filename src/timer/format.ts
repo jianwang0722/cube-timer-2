@@ -1,20 +1,23 @@
 /**
- * Format a duration for the timer display, truncated (never rounded) to
- * centiseconds per WCA display convention: 9.58, 59.99, 1:00.42, 12:34.56.
+ * Format a duration for the timer display, truncated (never rounded) per WCA
+ * display convention: 9.58, 59.99, 1:00.42, 12:34.56. `decimals: 1` gives the
+ * coarser live-timer form (8.3, 1:00.4) so running digits don't flicker.
  */
-export function formatTimeMs(ms: number): string {
+export function formatTimeMs(ms: number, decimals: 1 | 2 = 2): string {
   const clamped = Math.max(0, ms);
-  const totalCs = Math.floor(clamped / 10);
-  const cs = totalCs % 100;
-  const totalSeconds = Math.floor(totalCs / 100);
+  const unit = decimals === 2 ? 10 : 100;
+  const totalUnits = Math.floor(clamped / unit);
+  const perSecond = decimals === 2 ? 100 : 10;
+  const frac = totalUnits % perSecond;
+  const totalSeconds = Math.floor(totalUnits / perSecond);
   const seconds = totalSeconds % 60;
   const minutes = Math.floor(totalSeconds / 60);
 
-  const csStr = String(cs).padStart(2, "0");
+  const fracStr = String(frac).padStart(decimals, "0");
   if (minutes === 0) {
-    return `${seconds}.${csStr}`;
+    return `${seconds}.${fracStr}`;
   }
-  return `${minutes}:${String(seconds).padStart(2, "0")}.${csStr}`;
+  return `${minutes}:${String(seconds).padStart(2, "0")}.${fracStr}`;
 }
 
 /**

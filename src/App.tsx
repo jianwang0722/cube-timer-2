@@ -67,7 +67,7 @@ function App() {
     advance();
   };
 
-  const { state, displayMs, inspectionElapsedMs, surfaceProps } = useTimer({
+  const { state, displayMs, inspectionElapsedMs, surfaceProps, cancel } = useTimer({
     inspectionEnabled: settings.inspectionEnabled,
     holdMs: settings.holdMs,
     onSolve,
@@ -109,6 +109,10 @@ function App() {
           onImport={importSession}
           onOpenSettings={() => setSettingsOpen(true)}
           onMenuOpenChange={setMenuOpen}
+          inspectionEnabled={settings.inspectionEnabled}
+          onToggleInspection={() =>
+            update({ inspectionEnabled: !settings.inspectionEnabled })
+          }
         />
       </div>
 
@@ -129,6 +133,7 @@ function App() {
           isPb={isPb}
           prevBestSingle={prevBestSingle}
           onSetPenalty={setPenalty}
+          onCancelInspection={cancel}
         />
       </div>
 
