@@ -1,6 +1,7 @@
 export { ProgressionChart } from "./ProgressionChart";
 export { ScrambleDisplay } from "./ScrambleDisplay";
 export { SettingsDialog } from "./SettingsDialog";
+export { SolutionModal } from "./SolutionModal";
 export { SolutionPanel } from "./SolutionPanel";
 export { SolvePanel } from "./SolvePanel";
 export { StatsPanel } from "./StatsPanel";

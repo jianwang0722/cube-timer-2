@@ -1,0 +1,130 @@
+.solution-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.solution-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 41;
+  width: min(46rem, calc(100vw - 2 * var(--space-6)));
+  max-height: calc(100vh - 2 * var(--space-6));
+  overflow-y: auto;
+  padding: var(--space-5);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-2);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+}
+
+.solution-modal__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.solution-modal__total {
+  font-family: var(--font-digits);
+  font-size: 12px;
+  color: var(--text-index);
+  font-variant-numeric: tabular-nums;
+}
+
+.solution-modal__close {
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.solution-modal__note,
+.solution-modal__error {
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.solution-modal__error {
+  color: var(--state-dnf);
+}
+
+.solution-modal__body {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.solution-modal__cube {
+  flex: 0 0 15rem;
+  align-self: stretch;
+}
+
+.solution-modal__cube .twisty-viewer {
+  height: 15rem;
+  padding: 0;
+}
+
+.solution-modal__stages {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.solution-modal__stage {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr auto;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.solution-modal__stage[data-skip] {
+  color: var(--text-quiet);
+}
+
+.solution-modal__annotation {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.solution-modal__stage[data-skip] .solution-modal__annotation {
+  color: var(--text-quiet);
+}
+
+.solution-modal__moves {
+  font-family: var(--font-notation);
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+  word-spacing: 0.08em;
+  overflow-wrap: anywhere;
+}
+
+.solution-modal__count {
+  font-family: var(--font-digits);
+  font-size: 12px;
+  color: var(--text-index);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Stack the cube above the steps on narrow screens. */
+@media (max-width: 640px) {
+  .solution-modal__body {
+    flex-direction: column;
+  }
+
+  .solution-modal__cube {
+    flex-basis: auto;
+    width: 100%;
+  }
+}

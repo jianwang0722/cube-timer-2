@@ -4,6 +4,7 @@ import {
   ProgressionChart,
   ScrambleDisplay,
   SettingsDialog,
+  SolutionModal,
   SolutionPanel,
   SolvePanel,
   StatsPanel,
@@ -47,6 +48,7 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [chartOpen, setChartOpen] = useState(true);
+  const [solveModalOpen, setSolveModalOpen] = useState(false);
   const { scramble, advance } = useScramble();
   const {
     sessions,
@@ -162,19 +164,16 @@ function App() {
               {settings.showPreview ? "collapse ▴" : "expand ▾"}
             </button>
           </div>
-          {settings.showPreview && (
-            <TwistyViewer scramble={scramble} alg={solutionAlgObj} />
-          )}
+          {settings.showPreview && <TwistyViewer scramble={scramble} />}
         </section>
 
         <SolutionPanel
           status={solutionView.status}
           solution={solutionView.solution}
           disabled={scramble === null}
-          onReveal={() => {
-            // Playback needs the preview visible.
-            if (!settings.showPreview) update({ showPreview: true });
+          onOpen={() => {
             solutionView.reveal();
+            setSolveModalOpen(true);
           }}
         />
 
@@ -201,6 +200,15 @@ function App() {
       <div className="app__stats chrome">
         <StatsPanel stats={stats} pbFlags={pbFlags} />
       </div>
+
+      <SolutionModal
+        open={solveModalOpen}
+        status={solutionView.status}
+        solution={solutionView.solution}
+        scramble={scramble}
+        alg={solutionAlgObj}
+        onClose={() => setSolveModalOpen(false)}
+      />
 
       <SettingsDialog
         open={settingsOpen}

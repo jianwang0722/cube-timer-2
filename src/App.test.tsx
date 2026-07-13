@@ -499,22 +499,29 @@ test("the topbar inspection chip toggles inspection in one click", () => {
   expect(chip()).toHaveAccessibleName("inspection off");
 });
 
-test("Show solution reveals the CFOP breakdown and feeds the alg to the preview", () => {
+test("Show solution opens a modal with the CFOP breakdown and cube playback", () => {
   render(<App />);
 
-  // Hidden by default: no solution alg on the viewer.
+  // Rail preview shows only the scramble (no solution alg); no modal yet.
   expect(screen.getByTestId("twisty")).toHaveAttribute("data-alg", "");
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Show solution" }));
 
-  // Labeled stages + total move count appear.
-  expect(screen.getByText("36 STM")).toBeInTheDocument();
-  expect(screen.getByText("Cross (white)")).toBeInTheDocument();
-  expect(screen.getByText("OLL 27")).toBeInTheDocument();
-  expect(screen.getByText("T-perm")).toBeInTheDocument();
+  // The modal opens with labeled stages + total move count.
+  const dialog = screen.getByRole("dialog", { name: "Example solve" });
+  expect(within(dialog).getByText("36 STM")).toBeInTheDocument();
+  expect(within(dialog).getByText("Cross (white)")).toBeInTheDocument();
+  expect(within(dialog).getByText("OLL 27")).toBeInTheDocument();
+  expect(within(dialog).getByText("T-perm")).toBeInTheDocument();
 
-  // The verified solution alg reached the twisty-player for playback.
-  const alg = screen.getByTestId("twisty").getAttribute("data-alg") ?? "";
-  expect(alg).not.toBe("");
-  expect(alg.startsWith("z2")).toBe(true);
+  // The verified solution alg is loaded onto the modal's cube for playback.
+  expect(
+    within(dialog).getByTestId("twisty").getAttribute("data-alg") ?? "",
+  ).toMatch(/^z2/);
+
+  // Closing returns to the rail launcher, now offering to reopen.
+  fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "View solve" })).toBeInTheDocument();
 });

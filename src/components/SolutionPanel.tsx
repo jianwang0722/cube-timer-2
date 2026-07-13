@@ -4,22 +4,30 @@ import "./SolutionPanel.css";
 interface SolutionPanelProps {
   status: SolutionStatus;
   solution: Solution | null;
-  onReveal: () => void;
+  /** Reveal (if needed) and open the example-solve modal. */
+  onOpen: () => void;
   /** No scramble to solve yet (still generating). */
   disabled?: boolean;
 }
 
 /**
- * The CFOP example solve, revealed on demand. Each stage is labeled with its
- * move string and turn count; playback happens on the shared 3D preview using
- * the twisty-player's own control bar.
+ * Rail launcher for the CFOP example solve. The solve itself — cube playback
+ * and the labeled step breakdown — lives in {@link SolutionModal}; this is just
+ * the on-demand entry point (spoiler-safe until opened).
  */
 export function SolutionPanel({
   status,
   solution,
-  onReveal,
+  onOpen,
   disabled,
 }: SolutionPanelProps) {
+  const label =
+    status === "ready"
+      ? "View solve"
+      : status === "loading"
+        ? "solving…"
+        : "Show solution";
+
   return (
     <section className="rail-section solution-panel" aria-label="Example solve">
       <div className="rail-section__header">
@@ -28,49 +36,18 @@ export function SolutionPanel({
           <span className="solution-panel__total">{solution.totalMoves} STM</span>
         )}
       </div>
-
-      {status === "idle" && (
-        <button
-          type="button"
-          className="solution-panel__reveal"
-          onClick={onReveal}
-          disabled={disabled}
-        >
-          Show solution
-        </button>
-      )}
-
-      {status === "loading" && (
-        <p className="solution-panel__note">solving…</p>
-      )}
-
+      <button
+        type="button"
+        className="solution-panel__reveal"
+        onClick={onOpen}
+        disabled={disabled || status === "loading"}
+      >
+        {label}
+      </button>
       {status === "error" && (
         <p className="solution-panel__error" role="alert">
           couldn’t generate a valid solve
         </p>
-      )}
-
-      {status === "ready" && solution && (
-        <>
-          <ol className="solution-panel__stages">
-            {solution.stages.map((stage) => (
-              <li
-                key={stage.name}
-                className="solution-panel__stage"
-                data-skip={stage.moveCount === 0 || undefined}
-              >
-                <span className="solution-panel__annotation">
-                  {stage.annotation}
-                </span>
-                <span className="solution-panel__moves">
-                  {stage.moves || "—"}
-                </span>
-                <span className="solution-panel__count">{stage.moveCount}</span>
-              </li>
-            ))}
-          </ol>
-          <p className="solution-panel__hint">▶ play on the preview above</p>
-        </>
       )}
     </section>
   );
