@@ -1,3 +1,8 @@
+.solve-panel {
+  display: flex;
+  flex-direction: column;
+}
+
 .solve-panel__header {
   display: flex;
   justify-content: space-between;
@@ -112,4 +117,19 @@
 
 .solve-detail__controls button[aria-pressed="true"] {
   outline: 1px solid var(--text-tertiary);
+}
+
+/* Desktop: the list fills the rail's leftover height and scrolls internally,
+   so the page stays within one screen (mobile keeps the fixed max-height). */
+@media (min-width: 901px) {
+  .solve-panel {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .solve-panel__list {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+  }
 }

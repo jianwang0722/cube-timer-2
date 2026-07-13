@@ -79,6 +79,29 @@
   opacity: var(--recede-running);
 }
 
+/* Desktop: pin the whole app to one screen; the rail scrolls internally
+   (its solve list flexes) instead of growing the page. */
+@media (min-width: 901px) {
+  .app {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .app__rail {
+    overflow-y: auto;
+  }
+
+  /* Preview, example-solve launcher, and chart keep their natural height; the
+     solve list (below) takes the remaining space and scrolls. */
+  .app__rail > .rail-section {
+    flex-shrink: 0;
+  }
+
+  .rail-section--chart {
+    margin-top: 0;
+  }
+}
+
 /* Responsive: rail drops below the timer, stat band goes 2x2. */
 @media (max-width: 900px) {
   .app {
