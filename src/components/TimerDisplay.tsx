@@ -14,7 +14,15 @@ interface TimerDisplayProps {
   /** Best single before this solve, for the PB delta line. */
   prevBestSingle: StatResult;
   onSetPenalty: (id: string, penalty: Penalty) => void;
+  /** Abort a running inspection (misclick escape hatch). */
+  onCancelInspection: () => void;
 }
+
+/** Keep control clicks out of the press/release timing surface. */
+const isolate = {
+  onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
+  onPointerUp: (e: React.PointerEvent) => e.stopPropagation(),
+};
 
 const PENALTIES: Penalty[] = ["OK", "+2", "DNF"];
 const STICKERS = ["white", "yellow", "green", "blue", "red", "orange"] as const;
@@ -56,16 +64,19 @@ export function TimerDisplay({
   isPb,
   prevBestSingle,
   onSetPenalty,
+  onCancelInspection,
 }: TimerDisplayProps) {
   const isInspecting = inspecting(state);
   const showPb = state.status === "stopped" && isPb && lastSolve !== undefined;
 
+  // While running, one decimal keeps the display readable; full centisecond
+  // precision appears once stopped.
   const text =
     isInspecting && inspectionElapsedMs !== null
       ? formatInspection(inspectionElapsedMs)
       : state.status === "stopped" && lastSolve
         ? displayTime(lastSolve)
-        : formatTimeMs(displayMs);
+        : formatTimeMs(displayMs, state.status === "running" ? 1 : 2);
 
   const currentTone = tone(state, inspectionElapsedMs, lastSolve, isPb);
   const elapsedSec =
@@ -134,6 +145,18 @@ export function TimerDisplay({
           <span className="timer__hint timer__hint--ready">
             release to start
           </span>
+        ) : state.status === "inspection" ? (
+          <div className="timer__cancel-row">
+            <button
+              type="button"
+              className="timer__cancel"
+              {...isolate}
+              onClick={onCancelInspection}
+            >
+              cancel
+            </button>
+            <span className="timer__hint">esc cancels</span>
+          </div>
         ) : state.status === "stopped" && lastSolve ? (
           <div className="timer__penalties">
             {PENALTIES.map((p) => (
@@ -142,6 +165,7 @@ export function TimerDisplay({
                 type="button"
                 className={`timer__penalty timer__penalty--${p === "+2" ? "plus2" : p.toLowerCase()}`}
                 aria-pressed={lastSolve.penalty === p}
+                {...isolate}
                 onClick={() => onSetPenalty(lastSolve.id, p)}
               >
                 {p}

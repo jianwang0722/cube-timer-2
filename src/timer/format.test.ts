@@ -26,6 +26,16 @@ test("guards against negative input", () => {
   expect(formatTimeMs(-5)).toBe("0.00");
 });
 
+test("one-decimal form truncates to tenths for the live timer", () => {
+  expect(formatTimeMs(8372, 1)).toBe("8.3");
+  expect(formatTimeMs(8379, 1)).toBe("8.3");
+  expect(formatTimeMs(9580, 1)).toBe("9.5");
+  expect(formatTimeMs(59994, 1)).toBe("59.9");
+  expect(formatTimeMs(60420, 1)).toBe("1:00.4");
+  expect(formatTimeMs(0, 1)).toBe("0.0");
+  expect(formatTimeMs(-5, 1)).toBe("0.0");
+});
+
 test("inspection countdown shows seconds remaining, then +2, then DNF", () => {
   expect(formatInspection(0)).toBe("15");
   expect(formatInspection(1)).toBe("15");

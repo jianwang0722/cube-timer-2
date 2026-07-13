@@ -13,6 +13,8 @@ interface TopBarProps {
   onImport: (json: string) => boolean;
   onOpenSettings: () => void;
   onMenuOpenChange?: (open: boolean) => void;
+  inspectionEnabled: boolean;
+  onToggleInspection: () => void;
 }
 
 export function TopBar({
@@ -26,6 +28,8 @@ export function TopBar({
   onImport,
   onOpenSettings,
   onMenuOpenChange,
+  inspectionEnabled,
+  onToggleInspection,
 }: TopBarProps) {
   const [open, setOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -203,10 +207,23 @@ export function TopBar({
         </div>
         <button
           type="button"
+          className="topbar__chip"
+          title="Toggle 15s WCA inspection"
+          aria-pressed={inspectionEnabled}
+          onClick={onToggleInspection}
+        >
+          <span
+            className={`topbar__chip-dot${inspectionEnabled ? " topbar__chip-dot--on" : ""}`}
+            aria-hidden="true"
+          />
+          {inspectionEnabled ? "inspection 15s" : "inspection off"}
+        </button>
+        <button
+          type="button"
           className="topbar__settings"
           onClick={onOpenSettings}
         >
-          settings
+          <span aria-hidden="true">⚙ </span>settings
         </button>
       </div>
     </header>

@@ -39,6 +39,8 @@ export interface UseTimerResult {
   inspectionElapsedMs: number | null;
   /** Spread onto the touch/click timing surface. */
   surfaceProps: TimerSurfaceProps;
+  /** Abort an armed hold or a running inspection (same as Escape). */
+  cancel: () => void;
 }
 
 export function isEditableTarget(target: EventTarget | null): boolean {
@@ -53,6 +55,18 @@ function reduce(
   action: { event: TimerEvent; config: TimerConfig },
 ): TimerState {
   return transition(state, action.event, action.config);
+}
+
+/**
+ * Buttons and other controls rendered inside the timing surface (penalty
+ * pills, inspection cancel) must never register as press/release taps — with
+ * inspection enabled, a stray tap would start a fresh countdown.
+ */
+function isInteractiveTarget(target: EventTarget | null): boolean {
+  return (
+    target instanceof Element &&
+    target.closest("button, input, select, a, dialog") !== null
+  );
 }
 
 export function useTimer({
@@ -203,12 +217,12 @@ export function useTimer({
 
   const surfaceProps: TimerSurfaceProps = {
     onPointerDown: (e) => {
-      if (!e.isPrimary || isEditableTarget(e.target)) return;
+      if (!e.isPrimary || isInteractiveTarget(e.target)) return;
       e.preventDefault();
       send({ type: "PRESS", now: performance.now() });
     },
     onPointerUp: (e) => {
-      if (!e.isPrimary) return;
+      if (!e.isPrimary || isInteractiveTarget(e.target)) return;
       send({ type: "RELEASE", now: performance.now() });
     },
     onPointerCancel: () => {
@@ -216,5 +230,7 @@ export function useTimer({
     },
   };
 
-  return { state, displayMs, inspectionElapsedMs, surfaceProps };
+  const cancel = () => send({ type: "CANCEL" });
+
+  return { state, displayMs, inspectionElapsedMs, surfaceProps, cancel };
 }
