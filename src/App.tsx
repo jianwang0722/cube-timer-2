@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Alg } from "cubing/alg";
 import {
   ProgressionChart,
   ScrambleDisplay,
   SettingsDialog,
+  SolutionPanel,
   SolvePanel,
   StatsPanel,
   TimerDisplay,
@@ -10,6 +12,7 @@ import {
   TwistyViewer,
 } from "./components";
 import { useScramble } from "./scramble";
+import { solutionAlg, useSolution } from "./solver";
 import { useSettings } from "./settings";
 import { useSessions } from "./stats";
 import { beep } from "./timer/beep";
@@ -78,6 +81,17 @@ function App() {
 
   const lastSolve = currentSession.solves.at(-1);
   const isPb = pbFlags.single;
+
+  // On-demand CFOP example solve for the current scramble; the verified alg
+  // feeds the shared 3D preview for playback.
+  const solutionView = useSolution(scramble);
+  const solutionAlgObj = useMemo(
+    () =>
+      solutionView.solution
+        ? new Alg(solutionAlg(solutionView.solution))
+        : undefined,
+    [solutionView.solution],
+  );
 
   // Hotkey N: new scramble, only between attempts and outside menus/dialogs.
   const canRescramble =
@@ -148,8 +162,21 @@ function App() {
               {settings.showPreview ? "collapse ▴" : "expand ▾"}
             </button>
           </div>
-          {settings.showPreview && <TwistyViewer scramble={scramble} />}
+          {settings.showPreview && (
+            <TwistyViewer scramble={scramble} alg={solutionAlgObj} />
+          )}
         </section>
+
+        <SolutionPanel
+          status={solutionView.status}
+          solution={solutionView.solution}
+          disabled={scramble === null}
+          onReveal={() => {
+            // Playback needs the preview visible.
+            if (!settings.showPreview) update({ showPreview: true });
+            solutionView.reveal();
+          }}
+        />
 
         <SolvePanel
           solves={currentSession.solves}

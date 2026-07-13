@@ -45,6 +45,8 @@ export function TwistyViewer({ scramble, alg }: TwistyViewerProps) {
     if (!player) return;
     player.experimentalSetupAlg = scramble ?? "";
     player.alg = alg ?? "";
+    // Reveal the built-in play/scrub bar only while a solution is loaded.
+    player.controlPanel = alg ? "bottom-row" : "none";
   }, [playerReady, scramble, alg]);
 
   return (

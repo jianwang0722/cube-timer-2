@@ -1,33 +1,28 @@
 // @vitest-environment node
 /**
- * Phase 5.5 acceptance: the full cross → F2L → OLL → PLL chain, composed here
- * in the test (the shipping pipeline module is stage 5.6), run against 500
- * real random-state scrambles and refereed by the 5.0 KPuzzle harness.
+ * Phase 5.6 acceptance: the shipping `solve()` pipeline (cross → F2L → OLL →
+ * PLL) run against 500 real random-state scrambles and refereed by the 5.0
+ * KPuzzle harness. This drives the same module the UI ships, so the property
+ * corpus and production code can never drift apart.
  */
 import { expect, test } from "vitest";
 import { nextScramble } from "../scramble";
-import { solveCross } from "./cross";
-import { applyMoves, faceletsFromMoves, isSolved, parseMoves } from "./cube";
-import { solveF2L } from "./f2l";
-import { solveOLL } from "./oll";
-import { solvePLL } from "./pll";
+import { solutionAlg, solve } from "./solve";
 import { assertSolves } from "./verify";
 
-function solveCFOP(scramble: string): { moves: string[]; oll: number; pll: string | null } {
-  let state = faceletsFromMoves(parseMoves(scramble));
-  const moves: string[] = [];
-  const push = (m: string[]) => {
-    moves.push(...m);
-    state = applyMoves(state, m);
+/** Recover the OLL number / PLL name from the stage annotations. */
+function casesOf(solution: ReturnType<typeof solve>): {
+  oll: number;
+  pll: string | null;
+} {
+  const oll = solution.stages.find((s) => s.name === "oll")!.annotation;
+  const pll = solution.stages.find((s) => s.name === "pll")!.annotation;
+  const ollNum = /^OLL (\d+)$/.exec(oll);
+  const pllName = /^(.+)-perm$/.exec(pll);
+  return {
+    oll: ollNum ? Number(ollNum[1]) : 0,
+    pll: pllName ? pllName[1] : null,
   };
-  push(solveCross(state).moves);
-  for (const pair of solveF2L(state).pairs) push(pair.moves);
-  const oll = solveOLL(state);
-  push(oll.moves);
-  const pll = solvePLL(state);
-  push(pll.moves);
-  if (!isSolved(state)) throw new Error(`chain left cube unsolved for: ${scramble}`);
-  return { moves, oll: oll.caseId, pll: pll.caseName };
 }
 
 test(
@@ -42,12 +37,13 @@ test(
     for (let i = 0; i < 500; i++) {
       const scramble = (await nextScramble()).toString();
       const t0 = performance.now();
-      const { moves, oll, pll } = solveCFOP(scramble);
+      const solution = solve(scramble);
       times.push(performance.now() - t0);
-      moveCounts.push(moves.filter((m) => !/^[xyz]/.test(m)).length);
+      moveCounts.push(solution.totalMoves);
+      const { oll, pll } = casesOf(solution);
       ollSeen.add(oll);
       if (pll !== null) pllSeen.add(pll);
-      await assertSolves(scramble, moves.join(" "));
+      await assertSolves(scramble, solutionAlg(solution));
     }
 
     times.sort((a, b) => a - b);

@@ -19,3 +19,7 @@ export { solveOLL } from "./oll";
 export type { OLLSolution } from "./oll";
 export { solvePLL } from "./pll";
 export type { PLLSolution } from "./pll";
+export { solve, solveVerified, solutionAlg } from "./solve";
+export type { Solution, SolutionStage, SolveResult } from "./solve";
+export { useSolution } from "./useSolution";
+export type { SolutionStatus, UseSolutionResult } from "./useSolution";

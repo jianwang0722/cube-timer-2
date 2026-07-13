@@ -109,7 +109,7 @@ A phase is DONE only when all acceptance criteria pass and
 - [x] **5.4 OLL**: recognize the 57 OLL cases from the last-layer pattern; apply
       the standard algorithm; handle AUF (U-face pre-rotation) in recognition
 - [x] **5.5 PLL**: recognize the 21 PLL cases; apply algorithm + final AUF
-- [ ] **5.6 Presentation**: step-by-step UI — each stage labeled, move counts
+- [x] **5.6 Presentation**: step-by-step UI — each stage labeled, move counts
       shown, "play" button animates the solution on the twisty-player
 - [ ] **5.7 Quality pass**: prefer shorter cross solutions; avoid rotations where
       trivially possible; total solution typically ~55–70 STM like a real CFOP solve

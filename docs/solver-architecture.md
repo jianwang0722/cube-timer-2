@@ -110,7 +110,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 | 5.3 F2L | done |
 | 5.4 OLL | done |
 | 5.5 PLL | done |
-| 5.6 pipeline/UI | not started |
+| 5.6 pipeline/UI | done |
 | 5.7 quality | not started |
 
 ## Decision log
@@ -133,6 +133,19 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 - **2026-07-12** — Measured on the 500-scramble acceptance corpus: median
   solve 0.07 ms, mean 68.4 STM (already in the 55-70 target band before the
   5.7 quality pass).
+- **2026-07-12** (5.6) — `solve.ts` is the shipping pipeline, extracted from the
+  5.5 acceptance test's inline `solveCFOP`; `pipeline.test.ts` now drives it so
+  the property corpus and production code can't drift. `solveVerified()` is the
+  runtime guard (`await verifySolution`), returning `{ ok: false; reason }` so
+  the UI shows an error rather than a wrong example solve.
+- **2026-07-12** (5.6) — Final AUF is folded into the PLL stage's moves (as the
+  solver emits it); there is no separate `auf` stage. Stage list is therefore
+  cross, f2l-1..4, oll, pll.
+- **2026-07-12** (5.6) — Presentation is **on-demand** ("Show solution" button):
+  spoiler-safe, computes/verifies only when asked, and re-hides on a new
+  scramble (`useSolution`). Playback reuses the shared preview's
+  `<twisty-player>` via its built-in control bar (play/pause/step/scrub),
+  enabled only while a solution alg is loaded.
 
 ## Open questions (decide in the stage that hits them)
 

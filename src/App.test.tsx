@@ -22,10 +22,53 @@ vi.mock("./scramble", async () => {
 
 // The real viewer needs cubing/twisty + WebGL; assert on the props instead.
 vi.mock("./components/TwistyViewer", () => ({
-  TwistyViewer: ({ scramble }: { scramble: Alg | null }) => (
-    <div data-testid="twisty" data-scramble={scramble?.toString() ?? ""} />
+  TwistyViewer: ({ scramble, alg }: { scramble: Alg | null; alg?: Alg }) => (
+    <div
+      data-testid="twisty"
+      data-scramble={scramble?.toString() ?? ""}
+      data-alg={alg?.toString() ?? ""}
+    />
   ),
 }));
+
+// A deterministic example solve; the real cross/F2L/OLL/PLL search + KPuzzle
+// verification are covered by the solver's own tests. `solutionAlg` stays real.
+const { FAKE_SOLUTION } = vi.hoisted(() => ({
+  FAKE_SOLUTION: {
+    stages: [
+      { name: "cross", annotation: "Cross (white)", moves: "z2 F R U", moveCount: 3 },
+      { name: "f2l-1", annotation: "F2L pair 1", moves: "U R U' R'", moveCount: 4 },
+      { name: "f2l-2", annotation: "F2L pair 2", moves: "y' U' R' U R", moveCount: 4 },
+      { name: "f2l-3", annotation: "F2L pair 3", moves: "", moveCount: 0 },
+      { name: "f2l-4", annotation: "F2L pair 4", moves: "U R U' R'", moveCount: 4 },
+      { name: "oll", annotation: "OLL 27", moves: "R U R' U R U2 R'", moveCount: 7 },
+      {
+        name: "pll",
+        annotation: "T-perm",
+        moves: "R U R' U' R' F R2 U' R' U' R U R' F'",
+        moveCount: 14,
+      },
+    ],
+    totalMoves: 36,
+  },
+}));
+
+vi.mock("./solver", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./solver")>();
+  const { useState, useCallback } = await import("react");
+  return {
+    ...actual,
+    useSolution: () => {
+      const [revealed, setRevealed] = useState(false);
+      return {
+        status: revealed ? "ready" : "idle",
+        solution: revealed ? FAKE_SOLUTION : null,
+        reason: null,
+        reveal: useCallback(() => setRevealed(true), []),
+      };
+    },
+  };
+});
 
 beforeEach(() => {
   localStorage.clear();
@@ -454,4 +497,24 @@ test("the topbar inspection chip toggles inspection in one click", () => {
   fireEvent.keyDown(document.body, { code: "Escape", key: "Escape" });
   fireEvent.click(chip());
   expect(chip()).toHaveAccessibleName("inspection off");
+});
+
+test("Show solution reveals the CFOP breakdown and feeds the alg to the preview", () => {
+  render(<App />);
+
+  // Hidden by default: no solution alg on the viewer.
+  expect(screen.getByTestId("twisty")).toHaveAttribute("data-alg", "");
+
+  fireEvent.click(screen.getByRole("button", { name: "Show solution" }));
+
+  // Labeled stages + total move count appear.
+  expect(screen.getByText("36 STM")).toBeInTheDocument();
+  expect(screen.getByText("Cross (white)")).toBeInTheDocument();
+  expect(screen.getByText("OLL 27")).toBeInTheDocument();
+  expect(screen.getByText("T-perm")).toBeInTheDocument();
+
+  // The verified solution alg reached the twisty-player for playback.
+  const alg = screen.getByTestId("twisty").getAttribute("data-alg") ?? "";
+  expect(alg).not.toBe("");
+  expect(alg.startsWith("z2")).toBe(true);
 });
