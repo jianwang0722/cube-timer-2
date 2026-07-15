@@ -93,8 +93,11 @@ export function TopBar({
             onClick={() => setMenuOpen(!open)}
           >
             <span className="session-menu__dot" aria-hidden="true" />
-            {currentSession.name}
-            <span aria-hidden="true"> ▾</span>
+            <span className="session-menu__name">{currentSession.name}</span>
+            <span className="session-menu__caret" aria-hidden="true">
+              {" "}
+              ▾
+            </span>
           </button>
           {open && (
             <div
@@ -218,12 +221,16 @@ export function TopBar({
           />
           {inspectionEnabled ? "inspection 15s" : "inspection off"}
         </button>
+        {/* aria-label carries the name: the label span is hidden on phones,
+            leaving only the aria-hidden gear. */}
         <button
           type="button"
           className="topbar__settings"
+          aria-label="settings"
           onClick={onOpenSettings}
         >
-          <span aria-hidden="true">⚙ </span>settings
+          <span aria-hidden="true">⚙</span>
+          <span className="topbar__settings-label">settings</span>
         </button>
       </div>
     </header>

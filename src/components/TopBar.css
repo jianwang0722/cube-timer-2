@@ -8,27 +8,38 @@
   box-sizing: border-box;
 }
 
+/* The bar is one row at every width. The controls are fixed-size, so the
+   session name is the only flexible part: long names ellipsize instead of
+   widening the bar (which forces the whole page wider than the phone). */
+
 .topbar__wordmark {
   font-family: var(--font-digits);
   font-size: 15px;
   font-weight: 500;
   text-transform: lowercase;
   color: var(--text-primary);
+  flex-shrink: 0;
 }
 
 .topbar__actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .topbar__settings {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--text-primary);
   background: var(--bg-control);
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   padding: 5px 14px;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .topbar__chip {
@@ -40,6 +51,8 @@
   padding: 4px 12px;
   font-size: 12px;
   color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .topbar__chip:hover {
@@ -57,8 +70,13 @@
   background: var(--state-warn);
 }
 
+/* display:flex (not block) so the shrink-to-fit pill button tracks the
+   wrapper's width — as a block child it would keep its max-content width and
+   paint over the chip instead of ellipsizing. */
 .session-menu {
   position: relative;
+  display: flex;
+  min-width: 0;
 }
 
 .session-menu__pill {
@@ -68,6 +86,20 @@
   border-radius: var(--radius-pill);
   color: var(--text-primary);
   font-weight: 500;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.session-menu__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-menu__dot,
+.session-menu__caret {
+  flex-shrink: 0;
 }
 
 .session-menu__dot {
@@ -131,4 +163,50 @@
 .session-menu__rename input {
   flex: 1;
   min-width: 0;
+}
+
+/* Phones: four full-size controls need ~537px and don't fit. Settings drops to
+   its gear, the rest tightens, and the wordmark is the only thing allowed to
+   clip (it does so below ~360px). Not the app's 900px breakpoint — the bar's
+   own threshold is ~537px, and tablets above it need no compacting. */
+@media (max-width: 560px) {
+  .topbar {
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .topbar__wordmark {
+    font-size: 11px;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topbar__actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .session-menu__pill {
+    padding: 6px 4px;
+  }
+
+  .session-menu__name {
+    max-width: 5rem;
+  }
+
+  .topbar__chip {
+    font-size: 11px;
+    padding: 4px 7px;
+  }
+
+  .topbar__settings {
+    padding: 5px 9px;
+  }
+
+  .topbar__settings-label {
+    display: none;
+  }
 }
