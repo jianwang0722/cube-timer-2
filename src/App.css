@@ -24,7 +24,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  touch-action: none;
+  /* pan-y, not none: on mobile the page scrolls and the timer covers most of
+     it, so `none` left swipes nowhere to go but into the timing surface —
+     starting a solve. Vertical swipes are the browser's (it fires
+     pointercancel, which the surface already treats as CANCEL); taps are still
+     ours. Pinch- and double-tap-zoom stay blocked. Touch/pen only, and desktop
+     is height-pinned, so this is inert there. */
+  touch-action: pan-y;
   min-height: 320px;
 }
 

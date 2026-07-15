@@ -127,7 +127,10 @@ export function transition(
       return state;
 
     case "stopped":
-      if (event.type === "RELEASE") {
+      // CANCEL clears the guard like RELEASE does: a cancelled pointer (the
+      // browser taking a swipe over to scroll) never sends a RELEASE, so the
+      // guard would strand here and swallow the next press.
+      if (event.type === "RELEASE" || event.type === "CANCEL") {
         return { ...state, awaitingRelease: false };
       }
       if (event.type === "PRESS" && !state.awaitingRelease) {

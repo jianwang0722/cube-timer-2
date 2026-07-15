@@ -88,6 +88,23 @@ test("re-arming after a stop requires releasing the stopping key first", () => {
   expect(rearmed).toEqual({ status: "armed", since: 14000 });
 });
 
+test("a cancelled pointer clears the re-arm guard after a stop", () => {
+  const stopped: TimerState = {
+    status: "stopped",
+    timeMs: 10345,
+    penalty: "OK",
+    awaitingRelease: true,
+  };
+  // Stopping the timer with a swipe: pointerdown stops it, then the browser
+  // takes the gesture over to scroll and fires pointercancel — no pointerup
+  // ever arrives, so CANCEL has to clear the guard or the next press is lost.
+  const cancelled = run(noInspection, [{ type: "CANCEL" }], stopped);
+  expect(cancelled).toEqual({ ...stopped, awaitingRelease: false });
+  // The guard is clear, so the next press arms instead of being swallowed.
+  const rearmed = run(noInspection, [{ type: "PRESS", now: 14000 }], cancelled);
+  expect(rearmed).toEqual({ status: "armed", since: 14000 });
+});
+
 test("cancel aborts an armed hold", () => {
   const state = run(noInspection, [
     { type: "PRESS", now: 1000 },
