@@ -3,6 +3,7 @@ import type { Solve } from "../timer";
 import {
   localStorageStore,
   parsePersisted,
+  sessionEvent,
   STORAGE_KEY,
   type PersistedData,
 } from "./storage";
@@ -63,4 +64,31 @@ test("solves with invalid penalties are rejected", () => {
     ],
   };
   expect(parsePersisted(JSON.stringify(bad))).toBeNull();
+});
+
+test("a session tagged with an event round-trips", () => {
+  const withEvent: PersistedData = {
+    ...data,
+    sessions: [{ ...data.sessions[0], event: "444" }],
+  };
+  localStorageStore.save(withEvent);
+  expect(localStorageStore.load()).toEqual(withEvent);
+});
+
+test("a legacy session without an event still parses as 3x3", () => {
+  const parsed = parsePersisted(JSON.stringify(data));
+  expect(parsed).not.toBeNull();
+  expect(parsed?.sessions[0].event).toBeUndefined();
+  expect(sessionEvent(parsed!.sessions[0])).toBe("333");
+});
+
+test("a session with an unknown event is rejected", () => {
+  const bad = { ...data, sessions: [{ ...data.sessions[0], event: "666" }] };
+  expect(parsePersisted(JSON.stringify(bad))).toBeNull();
+});
+
+test("sessionEvent defaults absent to 3x3 and passes valid ids through", () => {
+  const base = { id: "a", name: "x", createdAt: 0, solves: [] };
+  expect(sessionEvent(base)).toBe("333");
+  expect(sessionEvent({ ...base, event: "555" })).toBe("555");
 });

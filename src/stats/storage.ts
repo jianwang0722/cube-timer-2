@@ -1,3 +1,4 @@
+import { DEFAULT_EVENT, isEventId, type EventId } from "../events";
 import type { Solve } from "../timer";
 
 export interface Session {
@@ -5,6 +6,13 @@ export interface Session {
   name: string;
   createdAt: number;
   solves: Solve[];
+  /** WCA event; absent on legacy (pre-multi-event) sessions — see sessionEvent. */
+  event?: EventId;
+}
+
+/** The session's event, defaulting legacy (untagged) sessions to 3x3. */
+export function sessionEvent(session: Session): EventId {
+  return session.event ?? DEFAULT_EVENT;
 }
 
 export interface PersistedData {
@@ -44,6 +52,8 @@ export function isSession(value: unknown): value is Session {
     typeof s.id === "string" &&
     typeof s.name === "string" &&
     typeof s.createdAt === "number" &&
+    // Absent event is legacy (defaults to 3x3); present must be a known id.
+    (s.event === undefined || isEventId(s.event)) &&
     Array.isArray(s.solves) &&
     s.solves.every(isSolve)
   );
