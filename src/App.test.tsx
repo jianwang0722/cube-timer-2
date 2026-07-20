@@ -617,3 +617,17 @@ test("the event picker is disabled while a solve is running", () => {
   fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
   expect(picker()).toBeEnabled();
 });
+
+test("the session menu tags each session with its event", () => {
+  render(<App />);
+  selectEvent("444"); // auto-creates a 4x4 "Session 2"
+
+  fireEvent.click(screen.getByRole("button", { name: /Session 2/ }));
+  const menu = screen.getByRole("menu", { name: "Sessions" });
+  expect(
+    within(menu).getByRole("menuitemradio", { name: /Session 1/ }),
+  ).toHaveTextContent("3×3");
+  expect(
+    within(menu).getByRole("menuitemradio", { name: /Session 2/ }),
+  ).toHaveTextContent("4×4");
+});

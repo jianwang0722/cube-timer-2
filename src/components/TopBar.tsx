@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { Session } from "../stats";
+import { EVENTS } from "../events";
+import { sessionEvent, type Session } from "../stats";
 import "./TopBar.css";
 
 interface TopBarProps {
@@ -118,7 +119,14 @@ export function TopBar({
                   }}
                 >
                   {s.name}
-                  <span className="session-menu__count">{s.solves.length}</span>
+                  <span className="session-menu__end">
+                    <span className="session-menu__tag">
+                      {EVENTS[sessionEvent(s)].label}
+                    </span>
+                    <span className="session-menu__count">
+                      {s.solves.length}
+                    </span>
+                  </span>
                 </button>
               ))}
               <hr className="session-menu__rule" />

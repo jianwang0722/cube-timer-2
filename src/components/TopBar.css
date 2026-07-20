@@ -137,6 +137,19 @@
   background: var(--bg-control);
 }
 
+.session-menu__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.session-menu__tag {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+}
+
 .session-menu__count {
   color: var(--text-index);
   font-variant-numeric: tabular-nums;
