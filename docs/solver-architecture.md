@@ -8,7 +8,10 @@ Living design doc for Phase 5 (docs/plan.md). Update the **Status** table and
 Produce a **human-style CFOP example solve** for the current scramble: cross →
 four F2L pairs → OLL → PLL, each stage labeled, totalling roughly 55–70 STM
 like a real solver would turn. Non-goals: fewest-moves solving, alternative
-methods (Roux is a Phase 6 stretch), speed-optimal algs per case.
+methods (Roux is a Phase 7 stretch), speed-optimal algs per case, and **other
+cube sizes** — the solver is and stays 3x3-only. Multi-event support (Phase 6)
+gates the whole example-solve UI on the session's event being `333`, so no
+solver code runs for 2x2/4x4/5x5.
 
 ## The three representations (decided)
 
@@ -146,6 +149,11 @@ how, but adds async plumbing we shouldn't pay for speculatively.
   scramble (`useSolution`). Playback reuses the shared preview's
   `<twisty-player>` via its built-in control bar (play/pause/step/scrub),
   enabled only while a solution alg is loaded.
+- **2026-07-20** (Phase 6) — Multi-event support (2x2/4x4/5x5) landed with
+  **zero solver changes**. The solver stays 3x3-only; `App` renders
+  `SolutionPanel`/`SolutionModal` only when `currentEvent === "333"`. Because
+  `useSolution` is reveal-triggered, not rendering those components means no
+  solver code (and no `cubing/search` import) ever runs for other events.
 
 ## Open questions (decide in the stage that hits them)
 

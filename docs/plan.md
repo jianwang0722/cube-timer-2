@@ -122,10 +122,39 @@ A phase is DONE only when all acceptance criteria pass and
 
 ---
 
-## Phase 6 — Stretch goals (only after 0–5)
+## Phase 6 — Multi-event support (2×2 / 4×4 / 5×5)
+
+One event per session; existing sessions default to 3x3. The CFOP example
+solve stays 3x3-only.
+
+- [x] **6.1 Events + scramble layer**: `src/events.ts` (event ids, labels,
+      twisty puzzle map); per-event prefetch queue keyed by event; `useScramble`
+      takes the event and resets on change
+- [x] **6.2 Session tagging**: optional `event` on `Session` (legacy → 3x3 via
+      `sessionEvent`); `useSessions` exposes `currentEvent` + `switchEvent`
+      (resume most-recent session of the event, else auto-create)
+- [x] **6.3 UI wiring**: event picker in the scramble bar; per-event 3D preview
+      (remount by key); example-solve UI gated to `333`; long-scramble layout
+- [x] **6.4 Session menu**: event tag per row
+- [x] **6.5 Docs**: this file, README, CLAUDE.md, `docs/wca-rules.md`,
+      solver-architecture note
+      **Acceptance criteria**
+- Each event generates its correct scramble type — random-state for 2×2/3×3/4×4,
+  random-moves for 5×5 (official TNoodle; there is no random-state 5×5)
+- Legacy stored sessions load unchanged as 3x3; localStorage key and `version: 1`
+  are untouched
+- No page overflow on desktop, no horizontal overflow on mobile, with a 5×5
+  scramble on screen
+- Production build (single inlined search worker) generates 4×4 and 5×5
+  scrambles — smoke-tested in a built app
+
+---
+
+## Phase 7 — Stretch goals (only after 0–6)
 
 - [ ] Solve replay / smart-cube (GAN bluetooth) input
-- [ ] Additional events (2x2, 4x4) — scrambles come free from cubing.js; stats generalize
+- [ ] 6x6 / 7x7 and non-cube events (scrambles come free from cubing.js;
+      Phase 6 delivered 2x2/4x4/5x5)
 - [ ] Alternative example-solve methods (Roux) or multiple CFOP solutions per scramble
 - [ ] Cloud sync
 
