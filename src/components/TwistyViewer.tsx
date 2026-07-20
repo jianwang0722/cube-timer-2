@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Alg } from "cubing/alg";
 import type { TwistyPlayer } from "cubing/twisty";
+import type { TwistyPuzzleId } from "../events";
 import "./TwistyViewer.css";
 
 interface TwistyViewerProps {
@@ -8,21 +9,29 @@ interface TwistyViewerProps {
   scramble: Alg | null;
   /** Solution to display/animate on top of the setup (Phase 5). */
   alg?: Alg;
+  /** Which cube to render; defaults to 3x3. */
+  puzzle?: TwistyPuzzleId;
 }
 
-export function TwistyViewer({ scramble, alg }: TwistyViewerProps) {
+export function TwistyViewer({
+  scramble,
+  alg,
+  puzzle = "3x3x3",
+}: TwistyViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<TwistyPlayer | null>(null);
   const [playerReady, setPlayerReady] = useState(false);
 
   // cubing/twisty is imported lazily; the player element is created
-  // imperatively once the module (and custom element) is available.
+  // imperatively once the module (and custom element) is available. `puzzle`
+  // is set at construction only — callers change it by remounting (key), which
+  // keeps the puzzle and its setup alg structurally in sync.
   useEffect(() => {
     let cancelled = false;
     void import("cubing/twisty").then(({ TwistyPlayer }) => {
       if (cancelled || !containerRef.current) return;
       const created = new TwistyPlayer({
-        puzzle: "3x3x3",
+        puzzle,
         controlPanel: "none",
         background: "none",
         hintFacelets: "none",
@@ -37,7 +46,7 @@ export function TwistyViewer({ scramble, alg }: TwistyViewerProps) {
       playerRef.current?.remove();
       playerRef.current = null;
     };
-  }, []);
+  }, [puzzle]);
 
   // playerReady re-runs this once the async creation lands.
   useEffect(() => {

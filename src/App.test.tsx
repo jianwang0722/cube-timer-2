@@ -4,16 +4,26 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import App from "./App";
 import { HOLD_MS } from "./timer";
 
-// Deterministic scrambles: each advance() steps to the next canned alg.
+// Deterministic scrambles. For 3x3 each advance() steps to the next canned
+// alg; other events return a distinct fixed alg so tests can tell them apart.
 const SCRAMBLES = ["R U R' U'", "F B F' B'", "L D L' D'"];
+const EVENT_SCRAMBLE: Record<string, string> = {
+  "222": "R U R'",
+  "444": "Rw U Rw' U'",
+  "555": "Uw R Uw' R'",
+};
 vi.mock("./scramble", async () => {
   const { useState } = await import("react");
   const { Alg } = await import("cubing/alg");
   return {
-    useScramble: () => {
+    useScramble: (event: string) => {
       const [i, setI] = useState(0);
+      const text =
+        event === "333"
+          ? SCRAMBLES[i % SCRAMBLES.length]
+          : EVENT_SCRAMBLE[event];
       return {
-        scramble: new Alg(SCRAMBLES[i % SCRAMBLES.length]),
+        scramble: new Alg(text),
         advance: () => setI((n) => n + 1),
       };
     },
@@ -22,11 +32,20 @@ vi.mock("./scramble", async () => {
 
 // The real viewer needs cubing/twisty + WebGL; assert on the props instead.
 vi.mock("./components/TwistyViewer", () => ({
-  TwistyViewer: ({ scramble, alg }: { scramble: Alg | null; alg?: Alg }) => (
+  TwistyViewer: ({
+    scramble,
+    alg,
+    puzzle,
+  }: {
+    scramble: Alg | null;
+    alg?: Alg;
+    puzzle?: string;
+  }) => (
     <div
       data-testid="twisty"
       data-scramble={scramble?.toString() ?? ""}
       data-alg={alg?.toString() ?? ""}
+      data-puzzle={puzzle ?? "3x3x3"}
     />
   ),
 }));
@@ -524,4 +543,77 @@ test("Show solution opens a modal with the CFOP breakdown and cube playback", ()
   fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "View solve" })).toBeInTheDocument();
+});
+
+function selectEvent(value: string) {
+  fireEvent.change(screen.getByRole("combobox", { name: "event" }), {
+    target: { value },
+  });
+}
+
+test("the event picker switches the scramble and the preview puzzle", () => {
+  render(<App />);
+  expect(screen.getByTestId("twisty")).toHaveAttribute("data-puzzle", "3x3x3");
+
+  selectEvent("444");
+  expect(screen.getByRole("combobox", { name: "event" })).toHaveValue("444");
+  expect(screen.getByTestId("twisty")).toHaveAttribute("data-puzzle", "4x4x4");
+  // The scramble is now a 4x4 one (wide moves) rather than the 3x3 canned alg.
+  expect(
+    screen.getByTestId("twisty").getAttribute("data-scramble"),
+  ).toContain("Rw");
+});
+
+test("the example-solve UI is 3x3-only and returns when 3x3 is reselected", () => {
+  render(<App />);
+  expect(
+    screen.getByRole("button", { name: "Show solution" }),
+  ).toBeInTheDocument();
+
+  selectEvent("222");
+  expect(
+    screen.queryByRole("button", { name: "Show solution" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "View solve" }),
+  ).not.toBeInTheDocument();
+
+  selectEvent("333");
+  expect(
+    screen.getByRole("button", { name: "Show solution" }),
+  ).toBeInTheDocument();
+});
+
+test("each event keeps its own session and solves", () => {
+  render(<App />);
+  completeSolve(10000); // 10.00 on 3x3
+  expect(screen.getByRole("listitem")).toHaveTextContent("10.00");
+
+  // Switching to 4x4 opens a fresh, empty session for that event.
+  selectEvent("444");
+  expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+  completeSolve(20000); // 20.00 on 4x4
+  expect(screen.getByRole("listitem")).toHaveTextContent("20.00");
+
+  // Back to 3x3: the original session and its solve return, not the 4x4 one.
+  selectEvent("333");
+  const items = screen.getAllByRole("listitem");
+  expect(items).toHaveLength(1);
+  expect(items[0]).toHaveTextContent("10.00");
+});
+
+test("the event picker is disabled while a solve is running", () => {
+  render(<App />);
+  const picker = () => screen.getByRole("combobox", { name: "event" });
+  expect(picker()).toBeEnabled();
+
+  pressSpace();
+  advance(HOLD_MS);
+  releaseSpace();
+  expect(timer()).toHaveAttribute("data-status", "running");
+  expect(picker()).toBeDisabled();
+
+  fireEvent.keyDown(document.body, { code: "KeyJ", key: "j" });
+  fireEvent.keyUp(document.body, { code: "KeyJ", key: "j" });
+  expect(picker()).toBeEnabled();
 });

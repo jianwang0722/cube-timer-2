@@ -1,20 +1,39 @@
 .scramble {
-  height: var(--scramble-h);
+  /* min-height, not height: 4x4/5x5 scrambles wrap to several lines and must
+     be free to grow past the desktop 92px baseline. */
+  min-height: var(--scramble-h);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-5);
-  padding: 0 var(--space-6);
+  padding: var(--space-3) var(--space-6);
+}
+
+.scramble__event {
+  flex-shrink: 0;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  padding: 4px 8px;
 }
 
 .scramble__text {
   margin: 0;
+  flex: 1;
+  min-width: 0;
   font-family: var(--font-notation);
   font-size: clamp(15px, 1.6vw, 21px);
   letter-spacing: 0.04em;
   color: var(--text-scramble);
   overflow-wrap: normal; /* break only between moves (spaces) */
+}
+
+/* Big cubes have long scrambles; step the type down so they wrap to fewer
+   lines and stay inside the layout. */
+.scramble[data-event="444"] .scramble__text,
+.scramble[data-event="555"] .scramble__text {
+  font-size: clamp(13px, 1.3vw, 17px);
+  line-height: 1.5;
 }
 
 .scramble__text[data-loading="true"] {
@@ -50,4 +69,26 @@
 
 .scramble__actions button:hover:not(:disabled) {
   color: var(--text-primary);
+}
+
+/* Phones: the picker and meta share the top row; the scramble drops to its own
+   full-width row below so a 5x5 sequence isn't squeezed into a narrow column. */
+@media (max-width: 560px) {
+  .scramble {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
+  .scramble__event {
+    order: 0;
+  }
+
+  .scramble__side {
+    order: 1;
+  }
+
+  .scramble__text {
+    order: 2;
+    flex-basis: 100%;
+  }
 }

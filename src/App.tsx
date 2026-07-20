@@ -12,6 +12,7 @@ import {
   TopBar,
   TwistyViewer,
 } from "./components";
+import { EVENTS } from "./events";
 import { useScramble } from "./scramble";
 import { solutionAlg, useSolution } from "./solver";
 import { useSettings } from "./settings";
@@ -49,11 +50,10 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [chartOpen, setChartOpen] = useState(true);
   const [solveModalOpen, setSolveModalOpen] = useState(false);
-  // Interim: 3x3 until the session's event is wired in (multi-event commit 3).
-  const { scramble, advance } = useScramble("333");
   const {
     sessions,
     currentSession,
+    currentEvent,
     stats,
     pbFlags,
     prevBestSingle,
@@ -64,9 +64,12 @@ function App() {
     renameSession,
     deleteSession,
     switchSession,
+    switchEvent,
     exportSession,
     importSession,
   } = useSessions();
+  // Scramble type follows the current session's event.
+  const { scramble, advance } = useScramble(currentEvent);
 
   const onSolve = (result: SolveResult) => {
     addSolve(result, scramble?.toString() ?? "");
@@ -86,7 +89,8 @@ function App() {
   const isPb = pbFlags.single;
 
   // On-demand CFOP example solve for the current scramble; the verified alg
-  // feeds the shared 3D preview for playback.
+  // feeds the shared 3D preview for playback. Example solves are 3x3-only.
+  const showSolution = currentEvent === "333";
   const solutionView = useSolution(scramble);
   const solutionAlgObj = useMemo(
     () =>
@@ -95,6 +99,14 @@ function App() {
         : undefined,
     [solutionView.solution],
   );
+
+  // Close the example-solve modal whenever the event changes (any path: picker,
+  // session switch, import), so returning to 3x3 never reopens a stale modal.
+  const [modalEvent, setModalEvent] = useState(currentEvent);
+  if (currentEvent !== modalEvent) {
+    setModalEvent(currentEvent);
+    setSolveModalOpen(false);
+  }
 
   // Hotkey N: new scramble, only between attempts and outside menus/dialogs.
   const canRescramble =
@@ -138,6 +150,11 @@ function App() {
           scramble={scramble}
           onNew={advance}
           solveIndex={currentSession.solves.length + 1}
+          event={currentEvent}
+          onEventChange={switchEvent}
+          eventDisabled={
+            !(state.status === "idle" || state.status === "stopped")
+          }
         />
       </div>
 
@@ -165,18 +182,26 @@ function App() {
               {settings.showPreview ? "collapse ▴" : "expand ▾"}
             </button>
           </div>
-          {settings.showPreview && <TwistyViewer scramble={scramble} />}
+          {settings.showPreview && (
+            <TwistyViewer
+              key={currentEvent}
+              puzzle={EVENTS[currentEvent].twistyPuzzle}
+              scramble={scramble}
+            />
+          )}
         </section>
 
-        <SolutionPanel
-          status={solutionView.status}
-          solution={solutionView.solution}
-          disabled={scramble === null}
-          onOpen={() => {
-            solutionView.reveal();
-            setSolveModalOpen(true);
-          }}
-        />
+        {showSolution && (
+          <SolutionPanel
+            status={solutionView.status}
+            solution={solutionView.solution}
+            disabled={scramble === null}
+            onOpen={() => {
+              solutionView.reveal();
+              setSolveModalOpen(true);
+            }}
+          />
+        )}
 
         <SolvePanel
           solves={currentSession.solves}
@@ -202,14 +227,16 @@ function App() {
         <StatsPanel stats={stats} pbFlags={pbFlags} />
       </div>
 
-      <SolutionModal
-        open={solveModalOpen}
-        status={solutionView.status}
-        solution={solutionView.solution}
-        scramble={scramble}
-        alg={solutionAlgObj}
-        onClose={() => setSolveModalOpen(false)}
-      />
+      {showSolution && (
+        <SolutionModal
+          open={solveModalOpen}
+          status={solutionView.status}
+          solution={solutionView.solution}
+          scramble={scramble}
+          alg={solutionAlgObj}
+          onClose={() => setSolveModalOpen(false)}
+        />
+      )}
 
       <SettingsDialog
         open={settingsOpen}
