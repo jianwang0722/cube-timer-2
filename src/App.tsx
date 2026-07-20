@@ -49,7 +49,8 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [chartOpen, setChartOpen] = useState(true);
   const [solveModalOpen, setSolveModalOpen] = useState(false);
-  const { scramble, advance } = useScramble();
+  // Interim: 3x3 until the session's event is wired in (multi-event commit 3).
+  const { scramble, advance } = useScramble("333");
   const {
     sessions,
     currentSession,

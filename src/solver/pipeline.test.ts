@@ -35,7 +35,7 @@ test(
     const pllSeen = new Set<string>();
 
     for (let i = 0; i < 500; i++) {
-      const scramble = (await nextScramble()).toString();
+      const scramble = (await nextScramble("333")).toString();
       const t0 = performance.now();
       const solution = solve(scramble);
       times.push(performance.now() - t0);

@@ -66,7 +66,7 @@ test(
     const kpuzzle = await puzzles["3x3x3"].kpuzzle();
 
     for (let i = 0; i < 15; i++) {
-      const scramble = await nextScramble();
+      const scramble = await nextScramble("333");
       const pattern = kpuzzle.defaultPattern().applyAlg(scramble);
       const solution = await experimentalSolve3x3x3IgnoringCenters(pattern);
       await assertSolves(scramble, solution);
