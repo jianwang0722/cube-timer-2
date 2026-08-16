@@ -38,7 +38,7 @@ export const OLL_ALGS: Record<number, string> = {
   25: "F' r U R' U' r' F R",
   26: "R U2 R' U' R U' R'",
   27: "R U R' U R U2 R'",
-  28: "r U R' U' L' l U R U' R'",
+  28: "r U R' U' r' R U R U' R'",
   29: "R U R' U' R U' R' F' U' F R U R'",
   30: "F U R U2 R' U' R U2 R' U' F'",
   31: "R' U' F U R U' R' F' R",

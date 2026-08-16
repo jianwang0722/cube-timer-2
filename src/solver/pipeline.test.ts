@@ -15,8 +15,11 @@ function casesOf(solution: ReturnType<typeof solve>): {
   oll: number;
   pll: string | null;
 } {
-  const oll = solution.stages.find((s) => s.name === "oll")!.annotation;
-  const pll = solution.stages.find((s) => s.name === "pll")!.annotation;
+  // A stage whose moves cancelled away entirely is tagged "(cancelled)"; the
+  // case was still recognized, so it still counts for coverage.
+  const strip = (a: string) => a.replace(/ \(cancelled\)$/, "");
+  const oll = strip(solution.stages.find((s) => s.name === "oll")!.annotation);
+  const pll = strip(solution.stages.find((s) => s.name === "pll")!.annotation);
   const ollNum = /^OLL (\d+)$/.exec(oll);
   const pllName = /^(.+)-perm$/.exec(pll);
   return {
@@ -54,5 +57,14 @@ test(
         `OLL cases seen ${ollSeen.size}/57 · PLL cases seen ${pllSeen.size}/21`,
     );
     expect(median).toBeLessThan(100);
+
+    // 5.7 acceptance: solutions should read like a good human's CFOP solve —
+    // the 55-70 STM band in docs/plan.md. Bounded on BOTH sides on purpose.
+    // The upper bound catches a quality regression; the lower one catches
+    // "improvements" that search their way out of the bottom of the band and
+    // stop looking human. Measured 56.0 with 500 samples (standard error
+    // ~0.4 STM), so these bounds are ~10 sigma out and won't flake.
+    expect(meanMoves).toBeGreaterThan(52);
+    expect(meanMoves).toBeLessThan(60);
   },
 );

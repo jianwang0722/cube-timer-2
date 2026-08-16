@@ -85,6 +85,11 @@ function countRotations(stages: readonly SolutionStage[]): number {
  * Re-cut the stage list after cleanup. Cancellation preserves order and only
  * ever re-tags a survivor to an earlier stage, so each stage's moves are still
  * contiguous in the cleaned list.
+ *
+ * Rarely (~0.05% of last-layer stages) a stage cancels away completely against
+ * its neighbour. The UI renders any zero-move stage as a skip, so leaving the
+ * label as "OLL 26" would claim a case was applied while showing nothing —
+ * say what actually happened instead.
  */
 function rebuildStages(
   stages: readonly SolutionStage[],
@@ -92,7 +97,12 @@ function rebuildStages(
 ): SolutionStage[] {
   return stages.map((stage, i) => {
     const moves = cleaned.filter((m) => m.stage === i).map((m) => m.move);
-    return { ...stage, moves: moves.join(" "), moveCount: countTurns(moves) };
+    const moveCount = countTurns(moves);
+    const annotation =
+      moveCount === 0 && stage.moveCount > 0
+        ? `${stage.annotation} (cancelled)`
+        : stage.annotation;
+    return { ...stage, annotation, moves: moves.join(" "), moveCount };
   });
 }
 

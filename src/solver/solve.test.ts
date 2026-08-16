@@ -56,3 +56,21 @@ test("an already-solved cube skips the last layer with a zero-turn solve", async
   const result = await solveVerified("");
   expect(result.ok).toBe(true);
 });
+
+test("stage seams cancel, and a stage cancelled away says so", async () => {
+  // Here OLL 26 runs straight into an Na-perm that opens with its inverse, so
+  // the whole OLL stage annihilates at the seam (~0.05% of last-layer stages).
+  // The UI draws any zero-move stage as a skip, so the label must not still
+  // read a bare "OLL 26" — that would claim a case while showing nothing.
+  const scramble =
+    "U' U B' F B' B2 U' F D' D2 R' F F' F' U2 U L' L2 U' B2 B D2 F R2 D2 F' F2 R' F F2";
+  const solution = solve(scramble);
+  const oll = solution.stages.find((s) => s.name === "oll")!;
+  const pll = solution.stages.find((s) => s.name === "pll")!;
+
+  expect(oll.moveCount).toBe(0);
+  expect(oll.annotation).toBe("OLL 26 (cancelled)");
+  // The work didn't vanish, only the moves did — PLL still finishes the cube.
+  expect(pll.moveCount).toBeGreaterThan(0);
+  await expect(solveVerified(scramble)).resolves.toMatchObject({ ok: true });
+});
