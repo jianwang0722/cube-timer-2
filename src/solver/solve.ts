@@ -8,6 +8,7 @@
  * acceptance corpus (`pipeline.test.ts`); this module is what the test now
  * drives, so shipping code and the property test never diverge.
  */
+import { tidyMoves, type TaggedMove } from "./cleanup";
 import { optimalCrossSolutions } from "./cross";
 import { applyMoves, faceletsFromMoves, parseMoves, type Facelets } from "./cube";
 import { solveF2L } from "./f2l";
@@ -60,10 +61,17 @@ export function solutionAlg(solution: Solution): string {
 
 /**
  * How many optimal crosses to try before committing (5.7). Every candidate
- * costs a full F2L/OLL/PLL pass, which is tens of microseconds; 32 keeps the
- * median solve near 1 ms against a 100 ms budget.
+ * costs a full F2L/OLL/PLL pass.
+ *
+ * Tuned, not guessed. Mean STM over 500 pseudo-scrambles by candidate count:
+ * 1 -> 60.4, 2 -> 58.5, 4 -> 56.7, 6 -> 56.0, 8 -> 55.4, 16 -> 54.7, 32 -> 54.2.
+ * Six is deliberately not the maximum: the target is a solve that reads like a
+ * good human's (the 55-70 STM band in docs/plan.md), and searching harder
+ * walks straight out the bottom of it. This keeps ~70% of the available gain,
+ * sits a clear move inside the band, and holds the median solve near 1 ms
+ * against a 100 ms budget.
  */
-const CROSS_CANDIDATES = 32;
+const CROSS_CANDIDATES = 6;
 
 /** Rotations aren't turns, but fewer of them reads better — used only to break ties. */
 function countRotations(stages: readonly SolutionStage[]): number {
@@ -71,6 +79,21 @@ function countRotations(stages: readonly SolutionStage[]): number {
     (n, s) => n + s.moves.split(" ").filter((m) => m && ROTATION.test(m)).length,
     0,
   );
+}
+
+/**
+ * Re-cut the stage list after cleanup. Cancellation preserves order and only
+ * ever re-tags a survivor to an earlier stage, so each stage's moves are still
+ * contiguous in the cleaned list.
+ */
+function rebuildStages(
+  stages: readonly SolutionStage[],
+  cleaned: readonly TaggedMove[],
+): SolutionStage[] {
+  return stages.map((stage, i) => {
+    const moves = cleaned.filter((m) => m.stage === i).map((m) => m.move);
+    return { ...stage, moves: moves.join(" "), moveCount: countTurns(moves) };
+  });
 }
 
 /** Everything after the cross, for one candidate cross. */
@@ -98,8 +121,17 @@ function solveFromCross(scrambled: Facelets, crossMoves: readonly string[]): Sol
     makeStage("pll", pll.caseName ? `${pll.caseName}-perm` : "PLL skip", pll.moves),
   );
 
-  const totalMoves = stages.reduce((sum, s) => sum + s.moveCount, 0);
-  return { stages, totalMoves };
+  // Tidy the whole thing as one sequence so the stage seams cancel too. The
+  // leading z2 is pinned (protectPrefix = 1): it's the orientation convention,
+  // and an already-solved cube would otherwise clean away to an empty alg.
+  const tagged: TaggedMove[] = [];
+  stages.forEach((stage, i) => {
+    for (const move of parseMoves(stage.moves)) tagged.push({ move, stage: i });
+  });
+  const tidied = rebuildStages(stages, tidyMoves(tagged, 1));
+
+  const totalMoves = tidied.reduce((sum, s) => sum + s.moveCount, 0);
+  return { stages: tidied, totalMoves };
 }
 
 /**
