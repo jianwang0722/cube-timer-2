@@ -1,12 +1,13 @@
 /**
- * Stage 5.3 — F2L (docs/solver-architecture.md).
+ * Stage 5.3 — F2L (docs/solver-architecture.md), with the 5.7 quality pass.
  *
- * Each pair is solved at the FR slot after y-alignment. The case table is
- * generated at init: BFS over human trigger gadgets, every one of which
- * net-preserves everything outside the U layer + FR slot (proven in tests
- * along with full reachability of the ~150 pair states). Pieces buried in
- * other slots are first popped out with an aligned R U R', with a U-parking
- * rule so the pop can never bury the pair's other piece.
+ * Each pair is solved at the FR slot after y-alignment, and pairs are taken
+ * easiest-first rather than in a fixed slot order (see solveF2L). The case
+ * table is generated at init: BFS over human trigger gadgets, every one of
+ * which net-preserves everything outside the U layer + FR slot (proven in
+ * tests along with full reachability of the ~150 pair states). Pieces buried
+ * in other slots are first popped out with an aligned R U R', with a
+ * U-parking rule so the pop can never bury the pair's other piece.
  */
 import {
   applyMoves,
@@ -237,23 +238,56 @@ export interface F2LSolution {
   pairs: F2LPair[];
 }
 
+const ROTATION = /^[xyz]/;
+
+/** Turns, with a nudge against rotations so a pair already at FR wins ties. */
+function pairCost(moves: readonly string[]): number {
+  let cost = 0;
+  for (const move of moves) cost += ROTATION.test(move) ? 0.5 : 1;
+  return cost;
+}
+
 /** Solve all four F2L pairs; input must have the cross solved (post-z2). */
 export function solveF2L(afterCross: Facelets): F2LSolution {
   tables ??= buildTables();
-  const ctx: PairContext = { state: afterCross, moves: [] };
-  const white = centerColor(ctx.state, FACE.D);
+  let state = afterCross;
+  const white = centerColor(state, FACE.D);
 
-  // Pair identities by side colors, in FR FL BR BL order at the start.
-  const pairColors = (["FR", "FL", "BR", "BL"] as const).map((slot) => {
+  // Pair identities are side COLORS, fixed up front — unlike slot names they
+  // survive the y-rotations solving emits between pairs.
+  const remaining = (["FR", "FL", "BR", "BL"] as const).map((slot) => {
     const [fa, fb] = E_SLOT_FACES[slot];
-    return [centerColor(ctx.state, fa), centerColor(ctx.state, fb)] as [number, number];
+    return [centerColor(state, fa), centerColor(state, fb)] as [number, number];
   });
 
   const pairs: F2LPair[] = [];
-  for (const [a, b] of pairColors) {
-    const start = ctx.moves.length;
-    solvePair(ctx, white, a, b);
-    pairs.push({ moves: ctx.moves.slice(start) });
+  while (remaining.length > 0) {
+    // Easiest-first, like a human: trial-solve every pair still open and
+    // commit the cheapest. Trials cost nothing to discard because applyMoves
+    // always allocates a fresh state — nothing here mutates in place. Ties go
+    // to the earliest pair in FR/FL/BR/BL order, so solve() stays deterministic.
+    //
+    // This is also what keeps pops rare: a pair whose pieces are buried scores
+    // badly and simply waits until another pair's solution frees them.
+    let bestIndex = -1;
+    let bestCtx: PairContext | null = null;
+    let bestCost = Infinity;
+    for (let i = 0; i < remaining.length; i++) {
+      const [a, b] = remaining[i];
+      const ctx: PairContext = { state, moves: [] };
+      solvePair(ctx, white, a, b);
+      const cost = pairCost(ctx.moves);
+      if (cost < bestCost) {
+        bestIndex = i;
+        bestCtx = ctx;
+        bestCost = cost;
+      }
+    }
+    if (bestCtx === null) throw new Error("F2L: no solvable pair remaining");
+
+    pairs.push({ moves: bestCtx.moves });
+    state = bestCtx.state;
+    remaining.splice(bestIndex, 1);
   }
   return { pairs };
 }
