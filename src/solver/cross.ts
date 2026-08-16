@@ -6,6 +6,9 @@
  * 4 white edges' (slot, flip) coordinate — 12^4 x 2^4 indices of which
  * 12·11·10·9 · 16 = 190,080 are reachable. Cross God's number is 8, so the
  * result is always optimal and ≤ 8 face moves after the z2.
+ *
+ * The cross color is white and only white — a deliberate scope decision, not
+ * a stepping stone (docs/solver-architecture.md decision log).
  */
 import {
   applyMoves,
@@ -136,35 +139,68 @@ export interface CrossSolution {
   moves: string[];
 }
 
-export function solveCross(scrambled: Facelets): CrossSolution {
-  tables ??= buildTables();
-  const { slotMap, flipMap, dist } = tables;
+/** Every move that steps one closer to a solved cross. */
+function descend(index: number, t: MoveTables): { move: string; index: number }[] {
+  const target = t.dist[index] - 1;
+  const { slots, flips } = decode(index);
+  const out: { move: string; index: number }[] = [];
+  for (let m = 0; m < FACE_MOVES.length; m++) {
+    const ns = [0, 0, 0, 0];
+    const nf = [0, 0, 0, 0];
+    for (let e = 0; e < 4; e++) {
+      ns[e] = t.slotMap[m][slots[e]];
+      nf[e] = flips[e] ^ t.flipMap[m][slots[e]];
+    }
+    const ni = encode(ns, nf);
+    if (t.dist[ni] === target) out.push({ move: FACE_MOVES[m], index: ni });
+  }
+  return out;
+}
 
-  let state = applyMoves(scrambled, "z2");
-  const moves: string[] = ["z2"];
-  let index = extract(state);
-  if (dist[index] === 255) {
+/**
+ * Up to `limit` distinct **optimal** cross solutions, each "z2" followed by
+ * ≤ 8 face moves.
+ *
+ * A cross state usually has many shortest solutions, and they are not
+ * interchangeable: each leaves the other 16 pieces somewhere different, so
+ * the choice decides how much work F2L then has. 5.7 solves the whole cube
+ * once per candidate and keeps the best (see solve.ts) instead of taking
+ * whichever one the search happened to reach first.
+ *
+ * Enumeration is a DFS down the distance gradient in FACE_MOVES order, so the
+ * first result is exactly what the original greedy walk produced and the
+ * output is deterministic. Truncation at `limit` therefore favours branches
+ * starting with U/F moves — a sampling bias, not a correctness issue.
+ */
+export function optimalCrossSolutions(scrambled: Facelets, limit = 1): string[][] {
+  const t = (tables ??= buildTables());
+  const start = extract(applyMoves(scrambled, "z2"));
+  if (t.dist[start] === 255) {
     throw new Error("Cross state unreachable — corrupt cube state");
   }
-  while (dist[index] > 0) {
-    const d = dist[index];
-    let advanced = false;
-    for (let m = 0; m < FACE_MOVES.length; m++) {
-      const { slots, flips } = decode(index);
-      const ns = slots.map((s) => slotMap[m][s]);
-      const nf = flips.map((fl, e) => fl ^ flipMap[m][slots[e]]);
-      const ni = encode(ns, nf);
-      if (dist[ni] === d - 1) {
-        moves.push(FACE_MOVES[m]);
-        state = applyMoves(state, FACE_MOVES[m]);
-        index = ni;
-        advanced = true;
-        break;
-      }
+
+  const found: string[][] = [];
+  const path: string[] = [];
+  const walk = (index: number): void => {
+    if (t.dist[index] === 0) {
+      found.push(["z2", ...path]);
+      return;
     }
-    if (!advanced) throw new Error("Cross walk stuck — distance table corrupt");
-  }
-  return { moves };
+    for (const step of descend(index, t)) {
+      if (found.length >= limit) return;
+      path.push(step.move);
+      walk(step.index);
+      path.pop();
+    }
+  };
+  walk(start);
+
+  if (found.length === 0) throw new Error("Cross walk stuck — distance table corrupt");
+  return found;
+}
+
+export function solveCross(scrambled: Facelets): CrossSolution {
+  return { moves: optimalCrossSolutions(scrambled, 1)[0] };
 }
 
 /** Exposed for tests: reachable-state count and max distance. */

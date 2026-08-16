@@ -8,7 +8,7 @@
  * acceptance corpus (`pipeline.test.ts`); this module is what the test now
  * drives, so shipping code and the property test never diverge.
  */
-import { solveCross } from "./cross";
+import { optimalCrossSolutions } from "./cross";
 import { applyMoves, faceletsFromMoves, parseMoves, type Facelets } from "./cube";
 import { solveF2L } from "./f2l";
 import { solveOLL } from "./oll";
@@ -59,19 +59,27 @@ export function solutionAlg(solution: Solution): string {
 }
 
 /**
- * Build a human-style CFOP example solve for `scramble`. Pure and synchronous —
- * the cross search plus F2L/OLL/PLL work stays well under the 100 ms budget.
+ * How many optimal crosses to try before committing (5.7). Every candidate
+ * costs a full F2L/OLL/PLL pass, which is tens of microseconds; 32 keeps the
+ * median solve near 1 ms against a 100 ms budget.
  */
-export function solve(scramble: string): Solution {
-  let state: Facelets = faceletsFromMoves(parseMoves(scramble));
-  const stages: SolutionStage[] = [];
+const CROSS_CANDIDATES = 32;
+
+/** Rotations aren't turns, but fewer of them reads better — used only to break ties. */
+function countRotations(stages: readonly SolutionStage[]): number {
+  return stages.reduce(
+    (n, s) => n + s.moves.split(" ").filter((m) => m && ROTATION.test(m)).length,
+    0,
+  );
+}
+
+/** Everything after the cross, for one candidate cross. */
+function solveFromCross(scrambled: Facelets, crossMoves: readonly string[]): Solution {
+  const stages: SolutionStage[] = [makeStage("cross", "Cross (white)", crossMoves)];
+  let state = applyMoves(scrambled, [...crossMoves]);
   const advance = (moves: readonly string[]) => {
     state = applyMoves(state, [...moves]);
   };
-
-  const cross = solveCross(state);
-  stages.push(makeStage("cross", "Cross (white)", cross.moves));
-  advance(cross.moves);
 
   solveF2L(state).pairs.forEach((pair, i) => {
     const name = `f2l-${i + 1}` as SolutionStage["name"];
@@ -92,6 +100,36 @@ export function solve(scramble: string): Solution {
 
   const totalMoves = stages.reduce((sum, s) => sum + s.moveCount, 0);
   return { stages, totalMoves };
+}
+
+/**
+ * Build a human-style CFOP example solve for `scramble`. Pure and synchronous —
+ * the cross search plus F2L/OLL/PLL work stays well under the 100 ms budget.
+ *
+ * The cross is always optimal, but which optimal cross you pick decides where
+ * the other 16 pieces land, so 5.7 solves the cube once per candidate cross
+ * and keeps the shortest result.
+ */
+export function solve(scramble: string): Solution {
+  const scrambled: Facelets = faceletsFromMoves(parseMoves(scramble));
+
+  let best: Solution | null = null;
+  let bestRotations = Infinity;
+  for (const crossMoves of optimalCrossSolutions(scrambled, CROSS_CANDIDATES)) {
+    const candidate = solveFromCross(scrambled, crossMoves);
+    const rotations = countRotations(candidate.stages);
+    // Fewest turns wins; fewer rotations breaks the tie; first-generated
+    // breaks that, keeping solve() deterministic.
+    if (
+      best === null ||
+      candidate.totalMoves < best.totalMoves ||
+      (candidate.totalMoves === best.totalMoves && rotations < bestRotations)
+    ) {
+      best = candidate;
+      bestRotations = rotations;
+    }
+  }
+  return best!;
 }
 
 export type SolveResult =
