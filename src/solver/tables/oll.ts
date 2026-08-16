@@ -1,8 +1,8 @@
 /**
- * The 57 OLL algorithms (standard speedsolving set), expressed in this
- * solver's move vocabulary: outer turns + x/y/z rotations. Wide moves are
- * rewritten mechanically (r = "x L", r' = "L' x'", r2 = "x2 L2", f = "z B",
- * f' = "B' z'", M = "x' L' R", M' = "x L R'").
+ * The 57 OLL algorithms (standard speedsolving set), in standard notation:
+ * outer turns, wide moves, M-slice, and the occasional rotation where the
+ * printed alg genuinely uses one (OLL 18's y-conjugate). `cube.ts` defines
+ * wide and slice moves natively, so nothing needs rewriting here.
  *
  * Correctness is machine-enforced (oll.test.ts): every alg must net-preserve
  * the cube outside the U layer, and the 57 alg-inverse patterns plus the
@@ -12,33 +12,33 @@
  */
 export const OLL_ALGS: Record<number, string> = {
   1: "R U2 R2 F R F' U2 R' F R F'",
-  2: "F R U R' U' F' z B R U R' U' B' z'",
-  3: "z B R U R' U' B' z' U' F R U R' U' F'",
-  4: "z B R U R' U' B' z' U F R U R' U' F'",
-  5: "L' x' U2 R U R' U x L",
-  6: "x L U2 R' U' R U' L' x'",
-  7: "x L U R' U R U2 L' x'",
-  8: "L' x' U' R U' R' U2 x L",
+  2: "F R U R' U' F' f R U R' U' f'",
+  3: "f R U R' U' f' U' F R U R' U' F'",
+  4: "f R U R' U' f' U F R U R' U' F'",
+  5: "r' U2 R U R' U r",
+  6: "r U2 R' U' R U' r'",
+  7: "r U R' U R U2 r'",
+  8: "r' U' R U' R' U2 r",
   9: "R U R' U' R' F R2 U R' U' F'",
   10: "R U R' U R' F R F' R U2 R'",
-  11: "x L U R' U R' F R F' R U2 L' x'",
+  11: "r U R' U R' F R F' R U2 r'",
   12: "F R U R' U' F' U F R U R' U' F'",
   13: "F U R U' R2 F' R U R U' R'",
   14: "R' F R U R' F' R F U' F'",
-  15: "L' x' U' x L R' U' R U L' x' U x L",
-  16: "x L U x' L' R U R' U' x L U' L' x'",
+  15: "r' U' r R' U' R U r' U r",
+  16: "r U r' R U R' U' r U' r'",
   17: "R U R' U R' F R F' U2 R' F R F'",
   18: "F R U R' U y' R' U2 R' F R F' y",
-  19: "x' L' R U R U R' U' x L R' R' F R F'",
-  20: "x L U R' U' x2 L2 R2 U R U' R' U' x L R'",
+  19: "M U R U R' U' M' R' F R F'",
+  20: "r U R' U' M2 U R U' R' U' M'",
   21: "R U2 R' U' R U R' U' R U' R'",
   22: "R U2 R2 U' R2 U' R2 U2 R",
   23: "R2 D' R U2 R' D R U2 R",
-  24: "x L U R' U' L' x' F R F'",
-  25: "F' x L U R' U' L' x' F R",
+  24: "r U R' U' r' F R F'",
+  25: "F' r U R' U' r' F R",
   26: "R U2 R' U' R U' R'",
   27: "R U R' U R U2 R'",
-  28: "x L U R' U' L' x' R U R U' R'",
+  28: "r U R' U' L' l U R U' R'",
   29: "R U R' U' R U' R' F' U' F R U R'",
   30: "F U R U2 R' U' R U2 R' U' F'",
   31: "R' U' F U R U' R' F' R",
@@ -59,13 +59,13 @@ export const OLL_ALGS: Record<number, string> = {
   46: "R' U' R' F R F' U R",
   47: "F' L' U' L U L' U' L U F",
   48: "F R U R' U' R U R' U' F'",
-  49: "x L U' x2 L2 U x2 L2 U x2 L2 U' x L",
-  50: "L' x' U x2 L2 U' x2 L2 U' x2 L2 U L' x'",
+  49: "r U' r2 U r2 U r2 U' r",
+  50: "r' U r2 U' r2 U' r2 U r'",
   51: "F U R U' R' U R U' R' F'",
   52: "R U R' U R U' B U' B' R'",
-  53: "L' x' U' R U' R' U R U' R' U2 x L",
-  54: "x L U R' U R U' R' U R U2 L' x'",
+  53: "r' U' R U' R' U R U' R' U2 r",
+  54: "r U R' U R U' R' U R U2 r'",
   55: "R U2 R2 U' R U' R' U2 F R F'",
-  56: "x L U L' x' U R U' R' U R U' R' x L U' L' x'",
-  57: "R U R' U' x L R' U R U' L' x'",
+  56: "r U r' U R U' R' U R U' R' r U' r'",
+  57: "R U R' U' M' U R U' r'",
 };

@@ -1,8 +1,9 @@
 /**
- * The 21 PLL algorithms (standard speedsolving set), expressed in outer
- * turns + rotations (M-slice sequences rewritten as x/L/R composites; a V
- * variant ending mid-rotation gets a closing y' — the final AUF absorbs the
- * residual U turn).
+ * The 21 PLL algorithms (standard speedsolving set), in standard notation —
+ * including the M-slice H and Z perms and the x-conjugated A perms, which is
+ * how these are actually printed. `cube.ts` defines wide and slice moves
+ * natively. The V perm ends mid-rotation with a closing y'; the final AUF
+ * absorbs the residual U turn.
  *
  * Correctness is machine-enforced (pll.test.ts): net effect must fix
  * everything below the last layer, patterns must be unique, and the 21
@@ -17,7 +18,7 @@ export const PLL_ALGS: Record<string, string> = {
   Gb: "R' U' R U D' R2 U R' U R U' R U' R2 D",
   Gc: "R2 U' R U' R U R' U R2 U D' R U' R' D",
   Gd: "R U R' U' D R2 U' R U' R' U R' U R2 D'",
-  H: "x2 L2 R2 U x2 L2 R2 U2 x2 L2 R2 U x2 L2 R2",
+  H: "M2 U M2 U2 M2 U M2",
   Ja: "L' U' L F L' U' L U L F' L2 U L",
   Jb: "R U R' F' R U R' U' R' F R2 U' R'",
   Na: "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
@@ -29,5 +30,5 @@ export const PLL_ALGS: Record<string, string> = {
   Ub: "R2 U R U R' U' R' U' R' U R'",
   V: "R' U R' U' y R' F' R2 U' R' U R' F R F y'",
   Y: "F R U' R' U' R U R' F' R U R' U' R' F R F'",
-  Z: "x L R' U x2 L2 R2 U x2 L2 R2 U x L R' U2 x2 L2 R2",
+  Z: "M' U M2 U M2 U M' U2 M2",
 };

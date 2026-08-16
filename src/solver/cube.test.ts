@@ -5,6 +5,7 @@ import { puzzles } from "cubing/puzzles";
 import { expect, test } from "vitest";
 import {
   applyMoves,
+  FACE_MOVES,
   faceletsFromMoves,
   isCrossSolved,
   isF2LSolved,
@@ -66,10 +67,20 @@ test("converter maps the solved pattern to solved facelets", async () => {
   expect(await kpuzzleFacelets("")).toEqual(SOLVED);
 });
 
-test("all 27 move permutations match KPuzzle exactly", async () => {
-  expect(MOVE_NAMES).toHaveLength(27);
+test("all 54 move permutations match KPuzzle exactly", async () => {
+  // 18 bases (6 outer, 6 wide, 3 slice, 3 rotation) x {1, ', 2}. KPuzzle
+  // defines wide and slice moves natively, so this also proves the
+  // compositions cube.ts derives them from (r = x L, M = x' L' R, ...).
+  expect(MOVE_NAMES).toHaveLength(54);
   for (const move of MOVE_NAMES) {
     expect(faceletsFromMoves(move), `move ${move}`).toEqual(await kpuzzleFacelets(move));
+  }
+});
+
+test("search vocabulary stays the 18 outer face moves", () => {
+  expect(FACE_MOVES).toHaveLength(18);
+  for (const move of FACE_MOVES) {
+    expect(move, move).toMatch(/^[UDLRFB](['2])?$/);
   }
 });
 
