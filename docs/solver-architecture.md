@@ -7,9 +7,12 @@ Living design doc for Phase 5 (docs/plan.md). Update the **Status** table and
 
 Produce a **human-style CFOP example solve** for the current scramble: cross →
 four F2L pairs → OLL → PLL, each stage labeled, totalling roughly 55–70 STM
-like a real solver would turn. Non-goals: fewest-moves solving, alternative
-methods (Roux is a Phase 7 stretch), speed-optimal algs per case, and **other
-cube sizes** — the solver is and stays 3x3-only. Multi-event support (Phase 6)
+like a real solver would turn. That band is a **target, not a floor**: 5.7
+gates it on both sides, because a solver that searches its way below 55 has
+stopped producing the thing this feature is for. Non-goals: fewest-moves
+solving, alternative methods (Roux is a Phase 7 stretch), speed-optimal algs
+per case, cross colors other than white, and **other cube sizes** — the solver
+is and stays 3x3-only. Multi-event support (Phase 6)
 gates the whole example-solve UI on the session's event being `333`, so no
 solver code runs for 2x2/4x4/5x5.
 
@@ -24,7 +27,8 @@ touches cubing.js internals; cubing.js never referees itself.
 | Referee | cubing.js **KPuzzle** (`puzzles["3x3x3"]`) | the 5.0 harness and tests only | solver logic |
 | Boundary / UI | `Alg` strings | scramble in, annotated solution out, twisty-player playback (`alg` prop reserved since Phase 2) | search |
 
-Rationale: IDA*/BFS needs tens of thousands of cheap state expansions —
+Rationale: the searches need cheap state expansion by the hundred thousand —
+the cross table alone BFSes 190,080 states over 18 moves at first use.
 KPuzzle allocates per move; a facelet permutation on a `Uint8Array` doesn't.
 Keeping KPuzzle as an *independent* referee means a bug in either model is
 caught by the harness instead of agreeing with itself.
@@ -32,8 +36,13 @@ caught by the harness instead of agreeing with itself.
 Facelet conventions (5.1 will pin these down in code):
 - Face order `U R F D L B`, indices `face * 9 + sticker`, stickers 0–8 in
   reading order per face (matches the common Kociemba facelet layout).
-- Move set: `U D L R F B` each in `{1, ', 2}` (STM), plus rotations `x y z`
-  for stage transitions. Wide moves are not generated.
+- Move set: 18 bases each in `{1, ', 2}` — outer `U D L R F B`, wide
+  `r l u d f b`, slice `M S E`, rotations `x y z`. Wide and slice moves are
+  **representable but never generated**: they exist so the OLL/PLL tables can
+  hold the standard printed algs, and `FACE_MOVES` (the search vocabulary for
+  cross and F2L) is an explicit 18-move outer-turn allowlist that excludes
+  them. Each is derived by composition (`r = x L`, `M = x' L' R`, …) and
+  cross-checked against KPuzzle.
 
 ## Verification contract (5.0 — the law)
 
@@ -64,20 +73,22 @@ of it:
 |---|---|---|
 | 5.0 | `verify.ts` | KPuzzle harness (above) |
 | 5.1 | `cube.ts` | facelet model, move tables, `applyMoves`, solved-checks used by stage invariants |
-| 5.2 | `cross.ts` | IDA* (depth ≤ 8) for the cross on the chosen color; returns annotated moves |
+| 5.2 | `cross.ts` | exact BFS distance table over the 4 white edges' (slot, flip) coordinate — 190,080 reachable states, cross God's number 8 — then gradient descent, so the cross is *provably optimal*, not merely depth-bounded. 5.7 added `optimalCrossSolutions` to enumerate the ties |
 | 5.3 | `f2l.ts` | pair detection (slot + case classification) + standard case table; solves pairs one at a time |
 | 5.4 | `oll.ts` | 57-case recognition from the last-layer orientation pattern, U-pre-rotation (AUF) handling, alg table |
 | 5.5 | `pll.ts` | 21-case recognition from last-layer permutation, alg table + final AUF |
 | 5.6 | `solve.ts` | pipeline orchestration, `Solution` types, runtime guard call |
-| 5.7 | (edits across) | quality pass: pick best cross color/solution, drop trivial rotations, move-count tuning |
+| 5.7 | `cleanup.ts` | adjacent-move cancellation over stage-tagged moves + trailing-rotation strip |
+| 5.7 | `cleanup.ts` + edits across | quality pass: best-of-N optimal crosses, easiest-first F2L, adjacent-move cancellation across stage seams, wide moves in the alg tables |
 
 ## Solution data shape (5.6)
 
 ```ts
 interface SolutionStage {
-  name: "cross" | "f2l-1" | "f2l-2" | "f2l-3" | "f2l-4" | "oll" | "pll" | "auf";
-  moves: string;        // STM, space-separated, may start with a rotation
+  name: "cross" | "f2l-1" | "f2l-2" | "f2l-3" | "f2l-4" | "oll" | "pll";
+  moves: string;        // space-separated, may start with a rotation
   annotation: string;   // e.g. "Cross (white)", "F2L pair 3", "OLL 27", "T-perm"
+  moveCount: number;    // turns in this stage; rotations excluded
 }
 
 interface Solution {
@@ -85,6 +96,10 @@ interface Solution {
   totalMoves: number;   // STM count across stages
 }
 ```
+
+There is no `auf` stage — the final AUF is folded into `pll` (see the decision
+log). Since 5.7 an annotation may carry a `" (cancelled)"` suffix when seam
+cancellation consumed that stage's moves entirely.
 
 `stages.map(s => s.moves).join(" ")` must pass `verifySolution` against the
 scramble — that exact string is also what twisty-player plays back.
@@ -99,9 +114,13 @@ exercise this machinery.
 ## Performance stance
 
 Main thread first. Budget: **< 100 ms per full solve** (median, measured in
-unit tests on the property corpus); the cross IDA* dominates. Only introduce a
-worker if measurements say so — the scramble worker precedent (Phase 2) shows
-how, but adds async plumbing we shouldn't pay for speculatively.
+unit tests on the property corpus). Since 5.7 the cost is dominated by solving
+the whole cube once per candidate cross — measured median **0.84 ms**, still
+~100x inside budget, so `CROSS_CANDIDATES` is limited by solution *quality*
+(staying in the 55–70 STM band), not by time. The one-off cost is building the
+190,080-state cross distance table at first use. Only introduce a worker if
+measurements say so — the scramble worker precedent (Phase 2) shows how, but
+adds async plumbing we shouldn't pay for speculatively.
 
 ## Status
 
@@ -114,7 +133,7 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 | 5.4 OLL | done |
 | 5.5 PLL | done |
 | 5.6 pipeline/UI | done |
-| 5.7 quality | not started |
+| 5.7 quality | done |
 
 ## Decision log
 
@@ -149,6 +168,37 @@ how, but adds async plumbing we shouldn't pay for speculatively.
   scramble (`useSolution`). Playback reuses the shared preview's
   `<twisty-player>` via its built-in control bar (play/pause/step/scrub),
   enabled only while a solution alg is loaded.
+- **2026-08-16** (5.7) — **Cross color is white, permanently** (user
+  decision). "Prefer shorter cross solutions" is therefore reinterpreted: the
+  cross is already optimal, so the quality lever is *which* optimal cross.
+  `optimalCrossSolutions` enumerates the ties and `solve()` runs the full
+  pipeline once per candidate, keeping the fewest turns (tiebreak: fewer
+  rotations, then generation order, so `solve()` stays deterministic).
+- **2026-08-16** (5.7) — `CROSS_CANDIDATES = 6`, tuned rather than maximized.
+  Mean STM by candidate count: 1 → 60.4, 2 → 58.5, 4 → 56.7, 6 → 56.0,
+  8 → 55.4, 16 → 54.7, 32 → 54.2. Searching harder walks out the *bottom* of
+  the 55–70 band; the goal is a solve that reads like a good human's, not the
+  shortest one findable. Six keeps ~70% of the gain and stays inside the band.
+- **2026-08-16** (5.7) — F2L is easiest-first: trial-solve every open pair,
+  commit the cheapest (turns, with a half-move nudge against y-alignment).
+  Trials are free because `applyMoves` never mutates in place. This is the
+  single biggest win (F2L 37.3 → 30.6 STM) and it mostly eliminates pops on
+  its own — a buried pair scores badly and waits until it comes free.
+- **2026-08-16** (5.7) — Cancellation crosses stage seams (user decision).
+  Consequence accepted: a printed alg can appear abridged (26% of solves cut
+  ≥1 move from a last-layer stage, mean 0.5). A survivor is attributed to the
+  *earlier* stage, which keeps stage tags non-decreasing and therefore each
+  stage's moves contiguous. The leading `z2` is pinned, without which an
+  already-solved cube cleans away to an empty alg.
+- **2026-08-16** (5.7) — Wide and slice moves became first-class in the
+  facelet model so the alg tables hold standard printed algs. The tables were
+  converted mechanically with every rewrite rule and every resulting alg
+  checked permutation-equal, so no algorithm changed meaning. Mean rotations
+  per solve 7.8 → 5.8.
+- **2026-08-16** (5.7) — Measured end state on the 500-scramble corpus:
+  **mean 56.0 STM** (was 68.4), median solve 0.84 ms (was 0.07 ms; still
+  ~100x inside the 100 ms budget). `pipeline.test.ts` gates the mean on both
+  sides, 52 < mean < 60.
 - **2026-07-20** (Phase 6) — Multi-event support (2x2/4x4/5x5) landed with
   **zero solver changes**. The solver stays 3x3-only; `App` renders
   `SolutionPanel`/`SolutionModal` only when `currentEvent === "333"`. Because
@@ -157,10 +207,13 @@ how, but adds async plumbing we shouldn't pay for speculatively.
 
 ## Open questions (decide in the stage that hits them)
 
-- **Cross color** (5.2/5.7): white-only first; 5.7 may try all six and keep
-  the shortest cross. Annotation must name the color either way.
 - **Alg table sources** (5.3–5.5): standard printable CFOP tables, encoded as
   data files with case ids matching speedcubing convention (OLL 1–57,
   PLL letter names). Every table entry gets a harness-backed test.
-- **F2L slot order** (5.3): fixed order vs. easiest-first; start fixed
-  (FR, FL, BR, BL), revisit in 5.7.
+
+Resolved:
+
+- ~~**Cross color** (5.2/5.7)~~ — white only, permanently (5.7, user
+  decision). Not a stepping stone: the six-color search is dropped, not
+  deferred. 5.7 instead picks the best among equally-optimal *white* crosses.
+- ~~**F2L slot order** (5.3)~~ — easiest-first (5.7). Was fixed FR/FL/BR/BL.

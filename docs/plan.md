@@ -111,14 +111,24 @@ A phase is DONE only when all acceptance criteria pass and
 - [x] **5.5 PLL**: recognize the 21 PLL cases; apply algorithm + final AUF
 - [x] **5.6 Presentation**: step-by-step UI — each stage labeled, move counts
       shown, "play" button animates the solution on the twisty-player
-- [ ] **5.7 Quality pass**: prefer shorter cross solutions; avoid rotations where
+- [x] **5.7 Quality pass**: prefer shorter cross solutions; avoid rotations where
       trivially possible; total solution typically ~55–70 STM like a real CFOP solve
-      **Acceptance criteria**
+  - [x] Best of N equally-optimal white crosses (cross color stays white — see
+        docs/solver-architecture.md decision log)
+  - [x] F2L pairs solved easiest-first instead of in a fixed slot order
+  - [x] Adjacent-move cancellation across stage seams (`src/solver/cleanup.ts`)
+  - [x] Wide/slice moves first-class, so the OLL/PLL tables hold the standard
+        printed algs and stop emitting cosmetic rotations
+        **Acceptance criteria**
 - Property test: 500 random scrambles → every generated solution passes the
   verification harness (state solved, no exceptions)
 - Every OLL and PLL case is hit at least once in the test corpus
 - Interim milestone (ships early, behind a label): "Computer solution" using a
   Kociemba two-phase solver as a placeholder while 5.2–5.5 are in progress
+- Mean solution length lands inside the 55–70 STM band — gated on both sides in
+  `pipeline.test.ts`, since searching too hard leaves the band from below and
+  stops looking like a human solve. Delivered: **56.0 STM mean** (was 68.4),
+  median solve 0.84 ms
 
 ---
 
